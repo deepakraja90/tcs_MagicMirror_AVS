@@ -1,0 +1,3 @@
+/home/pi/Documents/alexa-avs-sample-app-master/samples/wakeWordAgent/tst/CMakeFiles/edit_cache.dir
+/home/pi/Documents/alexa-avs-sample-app-master/samples/wakeWordAgent/tst/CMakeFiles/rebuild_cache.dir
+/home/pi/Documents/alexa-avs-sample-app-master/samples/wakeWordAgent/tst/CMakeFiles/wakeWordAgentTest.dir
