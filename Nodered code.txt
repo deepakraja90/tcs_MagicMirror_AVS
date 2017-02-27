@@ -1,1 +1,2501 @@
-[{"id":"df6518a5.58d298","type":"tab","label":"IoT and Alexa Connect"},{"id":"99964d17.db257","type":"tab","label":"Hello World"},{"id":"a2a2101b.a5c09","type":"tab","label":"Weather"},{"id":"4bb0a340.a70ccc","type":"tab","label":"Traffic"},{"id":"be5804a0.ac3408","type":"tab","label":"News"},{"id":"8533b372.8198f","type":"tab","label":"Time Zone"},{"id":"1a4c711a.6ec0af","type":"tab","label":"Look Intent"},{"id":"972cc76c.a236e8","type":"tab","label":"Still Learning"},{"id":"56b93e94.bd85f","type":"tab","label":"Fun"},{"id":"291a27a2.d21df8","type":"tab","label":"Flow 1"},{"id":"d01ff546.a7f6c8","type":"ui_base","theme":{"name":"theme-light","lightTheme":{"default":"#0094CE","baseColor":"#0094CE","baseFont":"Helvetica Neue","edited":true,"reset":false},"darkTheme":{"default":"#097479","baseColor":"#097479","baseFont":"Helvetica Neue","edited":true,"reset":false},"customTheme":{"name":"","default":"#4B7930","baseColor":"#4B7930","baseFont":"Helvetica Neue"},"themeState":{"base-color":{"default":"#0094CE","value":"#0094CE","edited":false},"page-titlebar-backgroundColor":{"value":"#0094CE","edited":false},"page-backgroundColor":{"value":"#fafafa","edited":false},"page-sidebar-backgroundColor":{"value":"#ffffff","edited":false},"group-textColor":{"value":"#000000","edited":false},"group-borderColor":{"value":"#ffffff","edited":false},"group-backgroundColor":{"value":"#ffffff","edited":false},"widget-textColor":{"value":"#111111","edited":false},"widget-backgroundColor":{"value":"#0094ce","edited":false},"widget-borderColor":{"value":"#ffffff","edited":false}}},"site":{"name":"Node-RED Dashboard","hideToolbar":"false","allowSwipe":"false","dateFormat":"DD/MM/YYYY","sizes":{"sx":48,"sy":48,"gx":6,"gy":6,"cx":6,"cy":6,"px":0,"py":0}}},{"id":"e319f0e3.708418","type":"websocket-listener","z":"df6518a5.58d298","path":"/ws/simple","wholemsg":"false"},{"id":"7d961659.8bdb3","type":"websocket-listener","z":"","path":"/ws/updateschedule","wholemsg":"true"},{"id":"f26b42f.a1e134","type":"websocket-listener","z":"","path":"/ws1/simple","wholemsg":"false"},{"id":"9f20461e.3dee38","type":"ibmiot in","z":"df6518a5.58d298","authentication":"boundService","apiKey":"","inputType":"evt","deviceId":"mydevice","applicationId":"","deviceType":"+","eventType":"+","commandType":"","format":"json","name":"IBM IoT","service":"registered","allDevices":"","allApplications":"","allDeviceTypes":true,"allEvents":true,"allCommands":"","allFormats":"","qos":"2","x":55,"y":212.66668701171875,"wires":[["111cbe1.7a34742","e9d81268.f41dc"]]},{"id":"111cbe1.7a34742","type":"debug","z":"df6518a5.58d298","name":"","active":false,"console":"false","complete":"payload","x":219.83331298828125,"y":57.66667175292969,"wires":[]},{"id":"d106adb.a836e5","type":"cloudant out","z":"df6518a5.58d298","name":"cardata","cloudant":"","database":"cardata","service":"cardata-cloudantNoSQLDB","payonly":true,"operation":"insert","x":65,"y":298.33331298828125,"wires":[]},{"id":"350a4d35.56b6ca","type":"http in","z":"df6518a5.58d298","name":"incoming request","url":"/jarvis","method":"post","swaggerDoc":"","x":85,"y":731,"wires":[["7ce4c955.a56b28"]]},{"id":"7ce4c955.a56b28","type":"switch","z":"df6518a5.58d298","name":"sort by request type","property":"payload.request.type","propertyType":"msg","rules":[{"t":"eq","v":"LaunchRequest","vt":"str"},{"t":"eq","v":"IntentRequest","vt":"str"},{"t":"eq","v":"SessionEndedRequest","vt":"str"},{"t":"else"}],"checkall":"true","outputs":4,"x":271,"y":558,"wires":[[],["ffed5c24.4817c8"],[],[]]},{"id":"ffed5c24.4817c8","type":"switch","z":"df6518a5.58d298","name":"Sort by Intent","property":"payload.request.intent.name","propertyType":"msg","rules":[{"t":"eq","v":"OtherwiseIntent","vt":"str"},{"t":"eq","v":"HelloWorldIntent","vt":"str"},{"t":"eq","v":"DriveIntent","vt":"str"},{"t":"eq","v":"TimeZoneIntent","vt":"str"},{"t":"eq","v":"NewsIntent","vt":"str"},{"t":"eq","v":"TrafficIntent","vt":"str"},{"t":"eq","v":"CurrentWeatherIntent","vt":"str"},{"t":"eq","v":"ForecastWeatherIntent","vt":"str"},{"t":"eq","v":"LookIntent","vt":"str"},{"t":"eq","v":"NameIntent","vt":"str"},{"t":"eq","v":"SmartIntent","vt":"str"},{"t":"eq","v":"SeriousIntent","vt":"str"},{"t":"eq","v":"CurrentTime","vt":"str"}],"checkall":"true","outputs":13,"x":545.3333129882812,"y":545.6666564941406,"wires":[["e73cbbcb.33eda8","85ccf93.f77ca08"],["15a39fa7.caa67"],["e9d81268.f41dc"],["8b2d81a4.54034"],["1a2e30d9.6953ef"],["8647d1ef.ac4ff"],["45824a1c.829754"],["25030d17.214672"],["9d3b4e87.07e68"],["abe5318f.2dfe3"],["33512009.e8dc"],["383c7f03.ea619"],["8f347cf3.7dd0c"]]},{"id":"19870802.cd35b","type":"template","z":"df6518a5.58d298","name":"not driving","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"Not driving at all","x":758.142822265625,"y":254,"wires":[["8c9572d1.10d928","836f3de5.bc796"]]},{"id":"8c9572d1.10d928","type":"template","z":"df6518a5.58d298","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":960.857177734375,"y":216,"wires":[["8dfc7aac.50176"]]},{"id":"8dfc7aac.50176","type":"json","z":"df6518a5.58d298","name":"","x":1130,"y":261.28570556640625,"wires":[["2dbefd1e.7c201a"]]},{"id":"2dbefd1e.7c201a","type":"http response","z":"df6518a5.58d298","name":"http","x":1279.2857666015625,"y":273.5714416503906,"wires":[]},{"id":"e9d81268.f41dc","type":"function","z":"df6518a5.58d298","name":"Driving","func":"context.ibmiot = context.ibmiot || null;\n\ncontext.intent = context.intent || null;\n var speedMsg  , intentMsg; \n\nif (msg.payload.request.type === 'IBMiot')\n    {\n    context.ibmiot = msg.payload;\n    var speedMsg = msg;\n     //speedMsg.payload = (msg.payload.request.rpm <= 1000) ? true : false;\n     //return [speedMsg , null];\n\n    }else if (msg.payload.request.type === 'IntentRequest')\n    {\n    context.intent = msg.payload;\n    var intentMsg = msg;\n    }\n    \n    \n\nif (context.intent !== null && context.ibmiot !== null)\n    {\n    //return ibmiot response to a function to calculate the speed\n    \n    \n    context.ibmiot = null;\n    context.intent = null;\n    return [intentMsg , null];  \n    \n    \n}else if (context.intent !== null && context.ibmiot === null){\n    //return output to a function saying not driving;\n    context.ibmiot = null;\n    context.intent = null;\n    return [null , intentMsg];\n\n}else if (context.intent === null && context.ibmiot !== null){\n    //return null on both the outputs so no action takes place.\n   // return [speedMsg, null];\n\n}else if (context.intent === null && context.ibmiot === null){\n    //This condition will never be satisfied.\n}\n","outputs":"2","noerr":0,"x":531.142822265625,"y":197.28570556640625,"wires":[["945e9389.6de718"],["19870802.cd35b"]]},{"id":"945e9389.6de718","type":"template","z":"df6518a5.58d298","name":"driving","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"driving well within the speed limits","x":685,"y":108,"wires":[["bc0a21a7.76c9d8","1f7959f0.4daed6"]]},{"id":"bc0a21a7.76c9d8","type":"template","z":"df6518a5.58d298","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":902,"y":108,"wires":[["c4fb9469.cb4f7"]]},{"id":"c4fb9469.cb4f7","type":"json","z":"df6518a5.58d298","name":"","x":1112.142822265625,"y":139.28570556640625,"wires":[["5c996ef2.66277"]]},{"id":"5c996ef2.66277","type":"http response","z":"df6518a5.58d298","name":"http","x":1314.4285888671875,"y":136.57144165039062,"wires":[]},{"id":"182bda8e.7af74d","type":"http response","z":"df6518a5.58d298","name":"","x":946.8333587646484,"y":1030.8333702087402,"wires":[]},{"id":"10c2153c.0719a3","type":"http in","z":"df6518a5.58d298","name":"","url":"/simple","method":"get","swaggerDoc":"","x":381.1666946411133,"y":1030.8333616256714,"wires":[["14dbc230.b2c1ae"]]},{"id":"51d038c5.589b","type":"template","z":"df6518a5.58d298","name":"Simple Web Page","field":"payload","fieldType":"msg","format":"html","syntax":"mustache","template":"<!DOCTYPE HTML>\n<html>\n    <head>\n    <title>Smart Mirror Assistant</title>\n    <style>{{{payload.style}}}</style>\n    <script type=\"text/javascript\">\n        var ws;\n        var wsUri = \"ws:\";\n        var loc = window.location;\n        console.log(loc);\n        if (loc.protocol === \"https:\") { wsUri = \"wss:\"; }\n        // This needs to point to the web socket in the Node-RED flow\n        // ... in this case it's ws/simple\n        wsUri += \"//\" + loc.host + loc.pathname.replace(\"simple\",\"ws/simple\");\n        function wsConnect() {\n            console.log(\"connect\",wsUri);\n            ws = new WebSocket(wsUri);\n            //var line = \"\";    // either uncomment this for a building list of messages\n            \n            ws.onmessage = function(msg) {\n                var line = \"\";  // or uncomment this to overwrite the existing message\n                // parse the incoming message as a JSON object\n                var data = msg.data;\n                //console.log(data);\n                // build the output from the topic and payload parts of the object\n                line += \"<p>\"+data+\"</p>\";\n                // replace the messages div with the new \"line\"\n                document.getElementById('messages').innerHTML = line;\n                //ws.send(JSON.stringify({data:data}));\n            }\n            \n            ws.onopen = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"connected\";\n                //ws.send(\"Open for data\");\n                console.log(\"connected\");\n            }\n            \n            ws.onclose = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"not connected\";\n                // in case of lost connection tries to reconnect every 1 secs\n                setTimeout(wsConnect,1000);\n            }\n        }\n        \n        function doit(m) {\n            if (ws) { \n            ws.send(m);\n            }\n        }\n        \n    </script>\n    </head>\n    <body onload=\"wsConnect();\" onunload=\"ws.disconnect();\">\n        <font face=\"Arial\">\n        <div id=\"today\" style=\"font-size:50%\" align=\"right\">Sun Feb 26, 2017</div>\n        <h4><i>Hello, this is Jarvis!! Your Smart Mirror</i></h4>\n        <div id=\"successdisplay\" style=\"font-size:100%\">How can I Help!!\n\t\t</div>\n\t\t<hr/>\n        <div id=\"messages\" style=\"font-size:60%\"></div>\n        \n        \n        <!-- <div id=\"status\">unknown</div>-->\n        </font>\n    </body>\n    \n</html>\n","x":774.8333587646484,"y":1030.8333702087402,"wires":[["182bda8e.7af74d"]]},{"id":"6a77f7ed.136d08","type":"websocket in","z":"df6518a5.58d298","name":"","server":"e319f0e3.708418","client":"","x":762.8333587646484,"y":1142.8333702087402,"wires":[["49f188b7.98de2"]]},{"id":"49f188b7.98de2","type":"debug","z":"df6518a5.58d298","name":"","active":true,"console":"false","complete":"false","x":952.8333587646484,"y":1142.8333702087402,"wires":[]},{"id":"14dbc230.b2c1ae","type":"template","z":"df6518a5.58d298","name":"css","field":"payload.style","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"html {\n  cursor: none;\n  overflow:hidden;\n}\n\n::-webkit-scrollbar { \n    display: none; \n}\n\nbody {\n  margin: 60px;\n  position: absolute;\n  height: calc(100% - 120px);\n  width: calc(100% - 120px);\n  background: #000;\n  color: #aaa;\n  font-family: \"Roboto Condensed\", sans-serif;\n  font-weight: 400;\n  font-size: 2.5em;\n  line-height: 1.5em;\n  -webkit-font-smoothing: antialiased;\n}\n\nli{\n\tmargin: 0 0 3px 0;\n}\n\nimg {\n    vertical-align: middle;\n}\n\n/**\n * Default styles.\n */\n\n.dimmed {\n  color: #666;\n}\n\n.normal {\n  color: #999;\n}\n\n.bright {\n  color: #fff;\n}\n\n.xsmall {\n  font-size: 15px;\n  line-height: 20px;\n}\n\n.small {\n  font-size: 20px;\n  line-height: 25px;\n}\n\n.medium {\n  font-size: 30px;\n  line-height: 35px;\n}\n\n.large {\n  font-size: 65px;\n  line-height: 65px;\n}\n\n.xlarge {\n  font-size: 75px;\n  line-height: 75px;\n  letter-spacing: -3px;\n}\n\n.thin {\n  font-family: Roboto, sans-serif;\n  font-weight: 100;\n}\n\n.light {\n  font-family: \"Roboto Condensed\", sans-serif;\n  font-weight: 300;\n}\n\n.regular {\n  font-family: \"Roboto Condensed\", sans-serif;\n  font-weight: 400;\n}\n\n.bold {\n  font-family: \"Roboto Condensed\", sans-serif;\n  font-weight: 700;\n}\n\n.align-right {\n  text-align: right;\n}\n\n.align-left {\n  text-align: left;\n}\n\nheader {\n  text-transform: uppercase;\n  font-size: 15px;\n  font-family: \"Roboto Condensed\";\n  font-weight: 400;\n  border-bottom: 1px solid #666;\n  line-height: 15px;\n  padding-bottom: 5px;\n  margin-bottom: 10px;\n  color: #999;\n}\n\nsup {\n  font-size: 50%;\n  line-height: 50%;\n}\n\ndiv.main {\n    height: 400px;\n    width: 600px;\n    background-color: blue;\n}\n\ndiv.icon{\n\n\tposition: absolute;\n    bottom: 50;\n    right: 0;\n    width: 300px;\n    border: 3px solid #73AD21;\n}\n\n\ndiv.location {\n    font-size:large;\n\tdisplay:table;\n}\n\ndiv.messages {\n    font-size:small;\n}\n\ndiv.description {\n\tdisplay:table-cell;\n\tvertical-align:middle;\t\n\tstyle=\"height: 64px;\"\n\tfont-size: 100px;\n}\n","x":548.3333587646484,"y":1030.0000368754067,"wires":[["51d038c5.589b"]]},{"id":"1f7959f0.4daed6","type":"websocket out","z":"df6518a5.58d298","name":"","server":"e319f0e3.708418","client":"","x":871,"y":46,"wires":[]},{"id":"836f3de5.bc796","type":"websocket out","z":"df6518a5.58d298","name":"","server":"e319f0e3.708418","client":"","x":934,"y":288,"wires":[]},{"id":"79289a0e.528164","type":"template","z":"df6518a5.58d298","name":"driving","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"Driving above speed","x":381,"y":2290,"wires":[["77ac5b5b.e835f4","5f72c0df.9ef2f"]]},{"id":"5f72c0df.9ef2f","type":"websocket out","z":"df6518a5.58d298","name":"","server":"e319f0e3.708418","client":"","x":561,"y":2260,"wires":[]},{"id":"77ac5b5b.e835f4","type":"template","z":"df6518a5.58d298","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":572,"y":2327,"wires":[["3eaed1ca.f1dd2e"]]},{"id":"3eaed1ca.f1dd2e","type":"json","z":"df6518a5.58d298","name":"","x":782.142822265625,"y":2358.2857055664062,"wires":[["6f722eb3.62a9f"]]},{"id":"6f722eb3.62a9f","type":"http response","z":"df6518a5.58d298","name":"http","x":984.4285888671875,"y":2355.5714416503906,"wires":[]},{"id":"77d7e1e5.a15e1","type":"websocket in","z":"291a27a2.d21df8","name":"","server":"7d961659.8bdb3","client":"","x":692.5,"y":642.5,"wires":[["c351ad7a.17db58"]]},{"id":"ad5210ab.4859c","type":"inject","z":"291a27a2.d21df8","name":"Tick every 5 secs","topic":"time","payload":"","payloadType":"date","repeat":"","crontab":"","once":false,"x":525.5,"y":577.5,"wires":[["46772275.0523dc"]]},{"id":"27bba9b9.20b5b6","type":"websocket out","z":"291a27a2.d21df8","name":"","server":"f26b42f.a1e134","client":"","x":972.5,"y":582.5,"wires":[]},{"id":"83b99140.6009b8","type":"http response","z":"291a27a2.d21df8","name":"","x":943.5,"y":522.5,"wires":[]},{"id":"37fab2ed.45f35e","type":"http in","z":"291a27a2.d21df8","name":"","url":"/schedule","method":"get","swaggerDoc":"","x":584.5,"y":522.5,"wires":[["172880e8.ac2b27"]]},{"id":"172880e8.ac2b27","type":"template","z":"291a27a2.d21df8","name":"Simple Web Page","field":"payload","fieldType":"msg","format":"html","syntax":"mustache","template":"<!DOCTYPE HTML>\n<html>\n    <head>\n    <title>Simple Live Display</title>\n    <script type=\"text/javascript\">\n        var ws;\n        var wsUri = \"ws:\";\n        var loc = window.location;\n        console.log(loc);\n        if (loc.protocol === \"https:\") { wsUri = \"wss:\"; }\n        // This needs to point to the web socket in the Node-RED flow\n        // ... in this case it's ws/simple\n        wsUri += \"//\" + loc.host + loc.pathname.replace(\"schedule\",\"ws/updateschedule\");\n\n        function wsConnect() {\n            if(msg.topic === 'time')\n            {\n                var timeMsg = msg;\n            }\n            console.log(\"connect\",wsUri);\n            ws = new WebSocket(wsUri);\n            //var line = \"\";    // either uncomment this for a building list of messages\n            ws.onmessage = function(timeMsg) {\n                var line = \"\";  // or uncomment this to overwrite the existing message\n                // parse the incoming message as a JSON object\n                var data = timeMsg.data;\n                //console.log(data);\n                // build the output from the topic and payload parts of the object\n                line += \"<p>\"+data+\"</p>\";\n                // replace the messages div with the new \"line\"\n                document.getElementById('messages').innerHTML = line;\n                //ws.send(JSON.stringify({data:data}));\n            }\n            ws.onopen = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"connected\";\n                //ws.send(\"Open for data\");\n                console.log(\"connected\");\n            }\n            ws.onclose = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"not connected\";\n                // in case of lost connection tries to reconnect every 3 secs\n                setTimeout(wsConnect,3000);\n            }\n        }\n        \n        function doit(m) {\n            if (ws) { ws.send(m); }\n        }\n    </script>\n    </head>\n    <body onload=\"wsConnect();\" onunload=\"ws.disconnect();\">\n        <font face=\"Arial\">\n        <h1>Simple Live Display</h1>\n        <div id=\"messages\"></div>\n        <button type=\"button\" onclick='doit(\"click\");'>Click to send message</button>\n        <hr/>\n        <div id=\"status\">unknown</div>\n        </font>\n    </body>\n</html>\n","x":771.5,"y":522.5,"wires":[["83b99140.6009b8"]]},{"id":"46772275.0523dc","type":"function","z":"291a27a2.d21df8","name":"format time nicely","func":"msg.payload = Date(msg.payload).toString();\nreturn msg;","outputs":1,"noerr":0,"x":760.5,"y":582.5,"wires":[["27bba9b9.20b5b6","c3ce390a.1021a8"]]},{"id":"c351ad7a.17db58","type":"debug","z":"291a27a2.d21df8","name":"","active":true,"console":"false","complete":"false","x":918.5,"y":642.5,"wires":[]},{"id":"51360c44.aae484","type":"http request","z":"a2a2101b.a5c09","name":"Get Current Weather","method":"GET","ret":"obj","url":"http://api.apixu.com/v1/forecast.json?key=ace5a435cc774be5a7510002172502&q=61704&days=1","tls":"","x":345,"y":135,"wires":[["f2d59718.9bd6f8","e5425b84.14a758","8b5aba3b.b1b7b8"]]},{"id":"f2d59718.9bd6f8","type":"template","z":"a2a2101b.a5c09","name":"Current weather Mirror","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"<br>It is currently  {{payload.current.condition.text}} now, with temperature of {{payload.current.temp_f}} degree Fahrenheit <br>","x":607.5000076293945,"y":58.75000286102295,"wires":[["c4ab91c3.6b42a"]]},{"id":"45824a1c.829754","type":"link out","z":"df6518a5.58d298","name":"Current Weather","links":["e645cc6c.cc26b"],"x":883.5,"y":477,"wires":[]},{"id":"e645cc6c.cc26b","type":"link in","z":"a2a2101b.a5c09","name":"Current Weather","links":["45824a1c.829754"],"x":125.00000190734863,"y":135.00000190734863,"wires":[["51360c44.aae484"]]},{"id":"31c2d04.f2c863","type":"template","z":"a2a2101b.a5c09","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":830.0000114440918,"y":273.75000381469727,"wires":[["230db1d9.08c25e"]]},{"id":"230db1d9.08c25e","type":"json","z":"a2a2101b.a5c09","name":"","x":1023.0000762939453,"y":273.08337783813477,"wires":[["d21a8366.f2a9a"]]},{"id":"d21a8366.f2a9a","type":"http response","z":"a2a2101b.a5c09","name":"http","x":1181.7859077453613,"y":272.15478897094727,"wires":[]},{"id":"e5425b84.14a758","type":"template","z":"a2a2101b.a5c09","name":"Current weather Alexa","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"It is currently  {{payload.current.condition.text}} now, with temperature of {{payload.current.temp_f}} degree Fahrenheit","x":582.5,"y":273.75,"wires":[["31c2d04.f2c863"]]},{"id":"b8a2c3cd.6fede","type":"http request","z":"a2a2101b.a5c09","name":"Get Forecast Weather","method":"GET","ret":"obj","url":"http://api.apixu.com/v1/forecast.json?key=ace5a435cc774be5a7510002172502&q=61704&days=1","tls":"","x":342.50000762939453,"y":527.5000076293945,"wires":[["3d315724.6629b8","8629aa04.9b2918"]]},{"id":"3d315724.6629b8","type":"template","z":"a2a2101b.a5c09","name":"Forecast weather Mirror","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"<br>{{payload.forecast.forecastday.0.day.condition.text}} today, with maximum temperature of {{payload.forecast.forecastday.0.day.maxtemp_f}} degree Fahrenheit and minimum temperature of {{payload.forecast.forecastday.0.day.mintemp_f}} degree Fahrenheit<br>","x":612.5000076293945,"y":420.00000762939453,"wires":[["5d126c9e.4314d4"]]},{"id":"8629aa04.9b2918","type":"template","z":"a2a2101b.a5c09","name":"Forecst weather Alexa","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{{payload.forecast.forecastday.0.day.condition.text}} today, with maximum temperature of {{payload.forecast.forecastday.0.day.maxtemp_f}} degree Fahrenheit and minimum temperature of {{payload.forecast.forecastday.0.day.mintemp_f}} degree Fahrenheit","x":605,"y":643.75,"wires":[["c0d16aea.953d78"]]},{"id":"c0d16aea.953d78","type":"template","z":"a2a2101b.a5c09","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":852.5000114440918,"y":643.7500038146973,"wires":[["d7bf45e1.62bca8"]]},{"id":"5d126c9e.4314d4","type":"websocket out","z":"a2a2101b.a5c09","name":"","server":"e319f0e3.708418","client":"","x":910.0000114440918,"y":427.50000762939453,"wires":[]},{"id":"d7bf45e1.62bca8","type":"json","z":"a2a2101b.a5c09","name":"","x":1045.5000762939453,"y":643.0833778381348,"wires":[["5fb7c1d2.5f29f"]]},{"id":"5fb7c1d2.5f29f","type":"http response","z":"a2a2101b.a5c09","name":"http","x":1204.2859077453613,"y":642.1547889709473,"wires":[]},{"id":"6d193d6a.821514","type":"link in","z":"a2a2101b.a5c09","name":"Forecast weather","links":["25030d17.214672"],"x":136.25000190734863,"y":526.2500076293945,"wires":[["b8a2c3cd.6fede"]]},{"id":"25030d17.214672","type":"link out","z":"df6518a5.58d298","name":"Forecast weather","links":["6d193d6a.821514"],"x":920.5,"y":501.75,"wires":[]},{"id":"9cf83a2d.52ade8","type":"function","z":"4bb0a340.a70ccc","name":"add http header","func":"msg.headers = {\n    \"Content-Type\": \"application/x-www-form-urlencoded\"\n};\nreturn msg;","outputs":1,"noerr":0,"x":266.25,"y":131.25,"wires":[["39d723b5.b920dc"]]},{"id":"39d723b5.b920dc","type":"http request","z":"4bb0a340.a70ccc","name":"get traffic","method":"GET","ret":"obj","url":"https://www.mapquestapi.com/traffic/v2/incidents?&outFormat=json&boundingBox=41.95055394133776%2C-87.47039794921874%2C41.81584950164211%2C-87.79449462890625&key=FH5SwSGGk43fnpqWK8Bxj4PFeZGOXD3q","tls":"","x":496.2500991821289,"y":130.41662979125977,"wires":[["198d4796.b194a8","bd3b154d.e7a8a8","56387d92.780cf4"]]},{"id":"56387d92.780cf4","type":"function","z":"4bb0a340.a70ccc","name":"Verify any incidents","func":"if (msg.payload.incidents.length ===0){\n    msg.payload = JSON.stringify('There are no incidents. You can start your journey!');\nreturn [null,msg];\n}\nelse\n{\n    //var msg1,i;\n    //msg1={};\n    //for (i=0;i<msg.payload.incidents.length - 1;i++){\n       //msg1 = msg1+msg.payload.incidents[i].shortDesc;\n       \n   //}\n   //msg1.payload = msg1;\n   //msg.payload = JSON.stringify(msg1.payload);\n   return [msg,null];\n}","outputs":"2","noerr":0,"x":733.3332633972168,"y":395.4166946411133,"wires":[["d76963b2.95d26","cbfe317d.a20ff"],["ed3ccdcb.bd6"]]},{"id":"bd3b154d.e7a8a8","type":"template","z":"4bb0a340.a70ccc","name":"first news","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{{payload.incidents.0.shortDesc}}","x":780.4166374206543,"y":162.91669273376465,"wires":[["a10b586e.818368","c48d8a7b.13ba28"]]},{"id":"198d4796.b194a8","type":"debug","z":"4bb0a340.a70ccc","name":"","active":true,"console":"false","complete":"false","x":813.750072479248,"y":89.58328628540039,"wires":[]},{"id":"a10b586e.818368","type":"debug","z":"4bb0a340.a70ccc","name":"","active":true,"console":"false","complete":"false","x":1018.3333892822266,"y":161.66672229766846,"wires":[]},{"id":"c48d8a7b.13ba28","type":"function","z":"4bb0a340.a70ccc","name":"if empty","func":"if (msg.payload === \"\"){\n    msg.payload = \"No incidents at all\";\n    return msg;\n}\nelse\n{\nreturn msg;    \n}\n","outputs":1,"noerr":0,"x":965.8333282470703,"y":238.3333797454834,"wires":[["1073b3dd.2028fc"]]},{"id":"d76963b2.95d26","type":"debug","z":"4bb0a340.a70ccc","name":"","active":true,"console":"false","complete":"false","x":1010.4165153503418,"y":335.83343982696533,"wires":[]},{"id":"cbfe317d.a20ff","type":"template","z":"4bb0a340.a70ccc","name":"traffic web template","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"<br>Traffic incidents in your area,<br>\n{{payload.incidents.0.shortDesc}}<br>\n{{payload.incidents.1.shortDesc}}<br>\n{{payload.incidents.2.shortDesc}}<br>\n{{payload.incidents.3.shortDesc}}<br>\n{{payload.incidents.4.shortDesc}}<br>","x":1000.0000152587891,"y":395.83344078063965,"wires":[["faffe430.388d18"]]},{"id":"ed3ccdcb.bd6","type":"template","z":"4bb0a340.a70ccc","name":"traffic web template","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"<br>There are no incidents in your area, Good luck for your journey!","x":1008.7500152587891,"y":473.7500686645508,"wires":[["c025a24e.e62f2"]]},{"id":"1073b3dd.2028fc","type":"template","z":"4bb0a340.a70ccc","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":1171.2498970031738,"y":242.91669273376465,"wires":[["15cdde0d.f194f2"]]},{"id":"15cdde0d.f194f2","type":"json","z":"4bb0a340.a70ccc","name":"","x":1387.999900817871,"y":249.75006675720215,"wires":[["49dc56ef.a0ab48"]]},{"id":"faffe430.388d18","type":"websocket out","z":"4bb0a340.a70ccc","name":"","server":"e319f0e3.708418","client":"","x":1221.6665229797363,"y":415.4165725708008,"wires":[]},{"id":"c025a24e.e62f2","type":"websocket out","z":"4bb0a340.a70ccc","name":"","server":"e319f0e3.708418","client":"","x":1236.6665229797363,"y":494.5831995010376,"wires":[]},{"id":"49dc56ef.a0ab48","type":"http response","z":"4bb0a340.a70ccc","name":"http","x":1591.369041442871,"y":249.65482139587402,"wires":[]},{"id":"bca17f6a.ce2cf","type":"link in","z":"4bb0a340.a70ccc","name":"Traffic","links":["8647d1ef.ac4ff"],"x":65,"y":131.25,"wires":[["9cf83a2d.52ade8"]]},{"id":"8647d1ef.ac4ff","type":"link out","z":"df6518a5.58d298","name":"Traffic","links":["bca17f6a.ce2cf"],"x":918.5,"y":451,"wires":[]},{"id":"21c51e.7f1ceae2","type":"http request","z":"be5804a0.ac3408","name":"get news from bing","method":"GET","ret":"obj","url":"https://api.cognitive.microsoft.com/bing/v5.0/news/search?q=top stories&count=5&offset=0&mkt=en-us&safeSearch=Moderate","tls":"","x":551.2500076293945,"y":161.25000381469727,"wires":[["7d8e050.8db09fc","f07e115f.c6f55","9b7b5276.eb914"]]},{"id":"2cb9c94c.0d4246","type":"function","z":"be5804a0.ac3408","name":"add http header","func":"msg.headers = {\n    \"Content-Type\": \"application/x-www-form-urlencoded\",\n    \"Ocp-Apim-Subscription-Key\":\"a00545aa3fbe425b89b27863b6718c0a\"\n};\nreturn msg;","outputs":1,"noerr":0,"x":348.33333333333337,"y":161.66666666666663,"wires":[["21c51e.7f1ceae2"]]},{"id":"7d8e050.8db09fc","type":"template","z":"be5804a0.ac3408","name":"news template","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"<br>Here are the top stories, <br>\n1. {{payload.value.0.name}}<br>\n2. {{payload.value.1.name}}<br>\n3. {{payload.value.2.name}}<br>\n4. {{payload.value.3.name}}<br>\n5. {{payload.value.4.name}}<br>","x":816.7500762939453,"y":275.16669178009033,"wires":[["c85885dd.9a15c8"]]},{"id":"c85885dd.9a15c8","type":"websocket out","z":"be5804a0.ac3408","name":"","server":"e319f0e3.708418","client":"","x":1087.416763305664,"y":271.66669273376465,"wires":[]},{"id":"f07e115f.c6f55","type":"template","z":"be5804a0.ac3408","name":"first news","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{{payload.value.0.name}}","x":801.8333282470703,"y":166.25000381469727,"wires":[["99c002db.37d1f"]]},{"id":"99c002db.37d1f","type":"template","z":"be5804a0.ac3408","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":1056.8333892822266,"y":174.25000381469727,"wires":[["b4d08526.59a6c8"]]},{"id":"b4d08526.59a6c8","type":"json","z":"be5804a0.ac3408","name":"","x":1318.5833930969238,"y":174.83337783813477,"wires":[["af1b5ee.ae5cca"]]},{"id":"af1b5ee.ae5cca","type":"http response","z":"be5804a0.ac3408","name":"http","x":1525.702537536621,"y":177.23816299438477,"wires":[]},{"id":"9b7b5276.eb914","type":"debug","z":"be5804a0.ac3408","name":"","active":false,"console":"false","complete":"false","x":787.9166984558105,"y":90.41670513153076,"wires":[]},{"id":"ce259a7b.4c7f88","type":"link in","z":"be5804a0.ac3408","name":"News","links":["1a2e30d9.6953ef"],"x":128.75,"y":161.25,"wires":[["2cb9c94c.0d4246"]]},{"id":"1a2e30d9.6953ef","type":"link out","z":"df6518a5.58d298","name":"News","links":["ce259a7b.4c7f88"],"x":880,"y":427.5,"wires":[]},{"id":"cdfe38b6.118778","type":"link in","z":"1a4c711a.6ec0af","name":"Look Intent","links":["9d3b4e87.07e68"],"x":92,"y":124,"wires":[["3007a256.6e43ee"]]},{"id":"9d3b4e87.07e68","type":"link out","z":"df6518a5.58d298","name":"Look Intent","links":["cdfe38b6.118778"],"x":883,"y":525,"wires":[]},{"id":"6ac751ef.96c3e","type":"template","z":"99964d17.db257","name":"say Hello","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"Hello World","x":436,"y":141,"wires":[["3f8e47c4.84cf48","4815d424.1ed25c"]]},{"id":"3f8e47c4.84cf48","type":"template","z":"99964d17.db257","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":618.5712890625,"y":142.5714111328125,"wires":[["9a4c42e1.fc504"]]},{"id":"4815d424.1ed25c","type":"websocket out","z":"99964d17.db257","name":"","server":"e319f0e3.708418","client":"","x":602.03564453125,"y":91.4285888671875,"wires":[]},{"id":"9a4c42e1.fc504","type":"json","z":"99964d17.db257","name":"","x":797.9998779296875,"y":145.857177734375,"wires":[["13948a8c.9b2015"]]},{"id":"13948a8c.9b2015","type":"http response","z":"99964d17.db257","name":"http","x":963.28564453125,"y":142.4285888671875,"wires":[]},{"id":"5cd66e66.75829","type":"link in","z":"99964d17.db257","name":"Hello world","links":["15a39fa7.caa67"],"x":202,"y":145,"wires":[["6ac751ef.96c3e"]]},{"id":"15a39fa7.caa67","type":"link out","z":"df6518a5.58d298","name":"Hello world","links":["5cd66e66.75829"],"x":870,"y":378,"wires":[]},{"id":"2d643a4a.c262a6","type":"http request","z":"8533b372.8198f","name":"get time zone","method":"GET","ret":"obj","url":"https://maps.googleapis.com/maps/api/timezone/json?location=40.4841,-88.9937&timestamp=1458000000&key=AIzaSyDatNfYBbLunXW1zkmXBfy1AyoegIlIq2g","tls":"","x":426,"y":159,"wires":[["12af3ee9.429661","c4f8f8d0.17bed8"]]},{"id":"84621e10.446f6","type":"json","z":"8533b372.8198f","name":"","x":1083.3333333333335,"y":221.33333333333337,"wires":[["d459c98.c558a38"]]},{"id":"d459c98.c558a38","type":"http response","z":"8533b372.8198f","name":"http","x":1249.619099934896,"y":217.90474446614587,"wires":[]},{"id":"a9c8f344.9fcd5","type":"websocket out","z":"8533b372.8198f","name":"","server":"e319f0e3.708418","client":"","x":927.999959309896,"y":160.33327229817712,"wires":[]},{"id":"12af3ee9.429661","type":"template","z":"8533b372.8198f","name":"timezone","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{{payload.timeZoneName}}","x":599.3332722981772,"y":223.99995930989587,"wires":[["118a8f72.cd98e1","a9c8f344.9fcd5"]]},{"id":"118a8f72.cd98e1","type":"template","z":"8533b372.8198f","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":825.3332722981772,"y":221.99995930989587,"wires":[["84621e10.446f6"]]},{"id":"4696dadd.75fb44","type":"link in","z":"8533b372.8198f","name":"Time zone","links":["8b2d81a4.54034"],"x":208,"y":157,"wires":[["2d643a4a.c262a6"]]},{"id":"8b2d81a4.54034","type":"link out","z":"df6518a5.58d298","name":"Time zone","links":["4696dadd.75fb44"],"x":911,"y":399,"wires":[]},{"id":"3007a256.6e43ee","type":"template","z":"1a4c711a.6ec0af","name":"Look","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"You look Gorgeous,My Dear!","x":245,"y":117,"wires":[["98a355e2.c830a8","79fa1378.012c5c"]]},{"id":"98a355e2.c830a8","type":"template","z":"1a4c711a.6ec0af","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":437.5712890625,"y":118.5714111328125,"wires":[["4828153e.1102ec"]]},{"id":"79fa1378.012c5c","type":"websocket out","z":"1a4c711a.6ec0af","name":"","server":"e319f0e3.708418","client":"","x":421.03564453125,"y":67.4285888671875,"wires":[]},{"id":"4828153e.1102ec","type":"json","z":"1a4c711a.6ec0af","name":"","x":616.9998779296875,"y":121.857177734375,"wires":[["2da83e3c.201d62"]]},{"id":"2da83e3c.201d62","type":"http response","z":"1a4c711a.6ec0af","name":"http","x":782.28564453125,"y":118.4285888671875,"wires":[]},{"id":"c4f8f8d0.17bed8","type":"debug","z":"8533b372.8198f","name":"","active":false,"console":"false","complete":"false","x":613,"y":114,"wires":[]},{"id":"e73cbbcb.33eda8","type":"debug","z":"df6518a5.58d298","name":"","active":true,"console":"false","complete":"false","x":699,"y":359,"wires":[]},{"id":"8f6b9dc3.e9f43","type":"template","z":"972cc76c.a236e8","name":"Learning","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"Sorry!! I do not have the skill. You should know that am still a child and learning fast.","x":391,"y":179,"wires":[["5ee38933.b9bd98","e6a461d2.a5887"]]},{"id":"5ee38933.b9bd98","type":"template","z":"972cc76c.a236e8","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":573.5712890625,"y":180.5714111328125,"wires":[["16ff5ee6.784061"]]},{"id":"e6a461d2.a5887","type":"websocket out","z":"972cc76c.a236e8","name":"","server":"e319f0e3.708418","client":"","x":557.03564453125,"y":129.4285888671875,"wires":[]},{"id":"16ff5ee6.784061","type":"json","z":"972cc76c.a236e8","name":"","x":752.9998779296875,"y":183.857177734375,"wires":[["83ba5125.24f43"]]},{"id":"83ba5125.24f43","type":"http response","z":"972cc76c.a236e8","name":"http","x":918.28564453125,"y":180.4285888671875,"wires":[]},{"id":"1c178ca2.fb3463","type":"link in","z":"972cc76c.a236e8","name":"Still Learning","links":["85ccf93.f77ca08"],"x":157,"y":183,"wires":[["8f6b9dc3.e9f43"]]},{"id":"85ccf93.f77ca08","type":"link out","z":"df6518a5.58d298","name":"Still Learning","links":["1c178ca2.fb3463"],"x":902,"y":354,"wires":[]},{"id":"fb268734.7e7e98","type":"template","z":"56b93e94.bd85f","name":"Name","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"The same stupid question. Do you not know your name?","x":431,"y":141,"wires":[["303f6159.c33eae","547d4ebd.455cc"]]},{"id":"303f6159.c33eae","type":"template","z":"56b93e94.bd85f","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":623.5712890625,"y":142.5714111328125,"wires":[["9aae9f38.e9415"]]},{"id":"547d4ebd.455cc","type":"websocket out","z":"56b93e94.bd85f","name":"","server":"e319f0e3.708418","client":"","x":607.03564453125,"y":91.4285888671875,"wires":[]},{"id":"9aae9f38.e9415","type":"json","z":"56b93e94.bd85f","name":"","x":802.9998779296875,"y":145.857177734375,"wires":[["348e58c.6a0a9a8"]]},{"id":"348e58c.6a0a9a8","type":"http response","z":"56b93e94.bd85f","name":"http","x":968.28564453125,"y":142.4285888671875,"wires":[]},{"id":"6dd32dd6.ac6d74","type":"link in","z":"56b93e94.bd85f","name":"Name","links":["abe5318f.2dfe3"],"x":207,"y":145,"wires":[["fb268734.7e7e98"]]},{"id":"abe5318f.2dfe3","type":"link out","z":"df6518a5.58d298","name":"Name","links":["6dd32dd6.ac6d74"],"x":926,"y":548,"wires":[]},{"id":"33512009.e8dc","type":"link out","z":"df6518a5.58d298","name":"Samrt person","links":["18fabc4c.ff0334"],"x":881,"y":579,"wires":[]},{"id":"383c7f03.ea619","type":"link out","z":"df6518a5.58d298","name":"Serious","links":["fdf9e287.9fc8c"],"x":930,"y":601,"wires":[]},{"id":"8f347cf3.7dd0c","type":"link out","z":"df6518a5.58d298","name":"Current Time","links":["bbf263b2.8f109"],"x":887,"y":629,"wires":[]},{"id":"3adb8fbb.7987c","type":"link out","z":"df6518a5.58d298","name":"","links":[],"x":922,"y":659,"wires":[]},{"id":"6dfd8498.829fec","type":"template","z":"56b93e94.bd85f","name":"Smart","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"Hmmm, ofcourse it is Dharmaraj Chandresaekaran","x":436,"y":296,"wires":[["805214b1.d3b088","5577d173.3e158"]]},{"id":"805214b1.d3b088","type":"template","z":"56b93e94.bd85f","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":628.5712890625,"y":297.5714111328125,"wires":[["9057de75.fca8b"]]},{"id":"5577d173.3e158","type":"websocket out","z":"56b93e94.bd85f","name":"","server":"e319f0e3.708418","client":"","x":612.03564453125,"y":246.4285888671875,"wires":[]},{"id":"9057de75.fca8b","type":"json","z":"56b93e94.bd85f","name":"","x":807.9998779296875,"y":300.857177734375,"wires":[["8c031498.7a1888"]]},{"id":"8c031498.7a1888","type":"http response","z":"56b93e94.bd85f","name":"http","x":973.28564453125,"y":297.4285888671875,"wires":[]},{"id":"18fabc4c.ff0334","type":"link in","z":"56b93e94.bd85f","name":"Samrt person","links":["33512009.e8dc"],"x":212,"y":300,"wires":[["6dfd8498.829fec"]]},{"id":"b2c456bf.a693f8","type":"template","z":"56b93e94.bd85f","name":"Serious","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"Nahh, I was just kidding.","x":454,"y":441,"wires":[["df8a6e9f.3a298","c0a00b52.762ad8"]]},{"id":"df8a6e9f.3a298","type":"template","z":"56b93e94.bd85f","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":636.5712890625,"y":442.5714111328125,"wires":[["d9a72c08.4fbe8"]]},{"id":"c0a00b52.762ad8","type":"websocket out","z":"56b93e94.bd85f","name":"","server":"e319f0e3.708418","client":"","x":620.03564453125,"y":391.4285888671875,"wires":[]},{"id":"d9a72c08.4fbe8","type":"json","z":"56b93e94.bd85f","name":"","x":815.9998779296875,"y":445.857177734375,"wires":[["9d2d7eff.48e9a"]]},{"id":"9d2d7eff.48e9a","type":"http response","z":"56b93e94.bd85f","name":"http","x":981.28564453125,"y":442.4285888671875,"wires":[]},{"id":"fdf9e287.9fc8c","type":"link in","z":"56b93e94.bd85f","name":"Serious","links":["383c7f03.ea619"],"x":220,"y":445,"wires":[["b2c456bf.a693f8"]]},{"id":"c3ce390a.1021a8","type":"debug","z":"291a27a2.d21df8","name":"","active":true,"console":"false","complete":"false","x":1105,"y":521,"wires":[]},{"id":"8b5aba3b.b1b7b8","type":"debug","z":"a2a2101b.a5c09","name":"","active":true,"console":"false","complete":"false","x":611,"y":132,"wires":[]},{"id":"5e375bc0.a85a74","type":"http request","z":"8533b372.8198f","name":"Get Current time","method":"GET","ret":"obj","url":"http://api.apixu.com/v1/forecast.json?key=ace5a435cc774be5a7510002172502&q=61704&days=1","tls":"","x":410.99999809265137,"y":444,"wires":[["6a1027d0.50cd08","3d0af239.141e2e","8befba53.5ce5c8"]]},{"id":"6a1027d0.50cd08","type":"template","z":"8533b372.8198f","name":"Current time Mirror","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"<br>It's {{payload.current.last_updated}}<br>","x":683.5000057220459,"y":367.75000286102295,"wires":[["e0c30a1a.b71718"]]},{"id":"bbf263b2.8f109","type":"link in","z":"8533b372.8198f","name":"Current Time","links":["8f347cf3.7dd0c"],"x":211,"y":444.00000190734863,"wires":[["5e375bc0.a85a74"]]},{"id":"81e57177.f5a9","type":"template","z":"8533b372.8198f","name":"Format Response","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }","x":916.0000095367432,"y":582.7500038146973,"wires":[["a55b1845.f1f3b8"]]},{"id":"a55b1845.f1f3b8","type":"json","z":"8533b372.8198f","name":"","x":1109.0000743865967,"y":582.0833778381348,"wires":[["64889c7.1556f64"]]},{"id":"64889c7.1556f64","type":"http response","z":"8533b372.8198f","name":"http","x":1267.7859058380127,"y":581.1547889709473,"wires":[]},{"id":"3d0af239.141e2e","type":"template","z":"8533b372.8198f","name":"Current Time Alexa","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"It is {{payload.current.last_updated}}","x":658.4999980926514,"y":582.75,"wires":[["81e57177.f5a9"]]},{"id":"8befba53.5ce5c8","type":"debug","z":"8533b372.8198f","name":"","active":false,"console":"false","complete":"false","x":696.9999980926514,"y":441,"wires":[]},{"id":"c4ab91c3.6b42a","type":"websocket out","z":"a2a2101b.a5c09","name":"","server":"e319f0e3.708418","client":"","x":847,"y":60,"wires":[]},{"id":"e0c30a1a.b71718","type":"websocket out","z":"8533b372.8198f","name":"","server":"e319f0e3.708418","client":"","x":986,"y":366,"wires":[]}]
+[
+    {
+        "id": "df6518a5.58d298",
+        "type": "tab",
+        "label": "IoT and Alexa Connect"
+    },
+    {
+        "id": "99964d17.db257",
+        "type": "tab",
+        "label": "Hello World"
+    },
+    {
+        "id": "1a4c711a.6ec0af",
+        "type": "tab",
+        "label": "Look Intent"
+    },
+    {
+        "id": "be5804a0.ac3408",
+        "type": "tab",
+        "label": "News"
+    },
+    {
+        "id": "8533b372.8198f",
+        "type": "tab",
+        "label": "Time Zone"
+    },
+    {
+        "id": "a2a2101b.a5c09",
+        "type": "tab",
+        "label": "Weather"
+    },
+    {
+        "id": "4bb0a340.a70ccc",
+        "type": "tab",
+        "label": "Traffic"
+    },
+    {
+        "id": "972cc76c.a236e8",
+        "type": "tab",
+        "label": "Still Learning"
+    },
+    {
+        "id": "56b93e94.bd85f",
+        "type": "tab",
+        "label": "Fun"
+    },
+    {
+        "id": "291a27a2.d21df8",
+        "type": "tab",
+        "label": "Flow 1"
+    },
+    {
+        "id": "d01ff546.a7f6c8",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "Helvetica Neue",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "Helvetica Neue",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "Helvetica Neue"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#000000",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#0094ce",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                }
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "e319f0e3.708418",
+        "type": "websocket-listener",
+        "z": "df6518a5.58d298",
+        "path": "/ws/simple",
+        "wholemsg": "false"
+    },
+    {
+        "id": "7d961659.8bdb3",
+        "type": "websocket-listener",
+        "z": "",
+        "path": "/ws/updateschedule",
+        "wholemsg": "true"
+    },
+    {
+        "id": "f26b42f.a1e134",
+        "type": "websocket-listener",
+        "z": "",
+        "path": "/ws1/simple",
+        "wholemsg": "false"
+    },
+    {
+        "id": "9f20461e.3dee38",
+        "type": "ibmiot in",
+        "z": "df6518a5.58d298",
+        "authentication": "boundService",
+        "apiKey": "",
+        "inputType": "evt",
+        "deviceId": "mydevice",
+        "applicationId": "",
+        "deviceType": "+",
+        "eventType": "+",
+        "commandType": "",
+        "format": "json",
+        "name": "IBM IoT",
+        "service": "registered",
+        "allDevices": "",
+        "allApplications": "",
+        "allDeviceTypes": true,
+        "allEvents": true,
+        "allCommands": "",
+        "allFormats": "",
+        "qos": "2",
+        "x": 55,
+        "y": 212.66668701171875,
+        "wires": [
+            [
+                "111cbe1.7a34742",
+                "e9d81268.f41dc",
+                "d106adb.a836e5"
+            ]
+        ]
+    },
+    {
+        "id": "111cbe1.7a34742",
+        "type": "debug",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 219.83331298828125,
+        "y": 57.66667175292969,
+        "wires": []
+    },
+    {
+        "id": "d106adb.a836e5",
+        "type": "cloudant out",
+        "z": "df6518a5.58d298",
+        "name": "cardata",
+        "cloudant": "",
+        "database": "cardata",
+        "service": "cardata-cloudantNoSQLDB",
+        "payonly": true,
+        "operation": "insert",
+        "x": 217.85714721679688,
+        "y": 289.7618713378906,
+        "wires": []
+    },
+    {
+        "id": "350a4d35.56b6ca",
+        "type": "http in",
+        "z": "df6518a5.58d298",
+        "name": "incoming request",
+        "url": "/jarvis",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 85,
+        "y": 731,
+        "wires": [
+            [
+                "7ce4c955.a56b28"
+            ]
+        ]
+    },
+    {
+        "id": "7ce4c955.a56b28",
+        "type": "switch",
+        "z": "df6518a5.58d298",
+        "name": "sort by request type",
+        "property": "payload.request.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "LaunchRequest",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "IntentRequest",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "SessionEndedRequest",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 4,
+        "x": 271,
+        "y": 558,
+        "wires": [
+            [],
+            [
+                "ffed5c24.4817c8"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "ffed5c24.4817c8",
+        "type": "switch",
+        "z": "df6518a5.58d298",
+        "name": "Sort by Intent",
+        "property": "payload.request.intent.name",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "OtherwiseIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "HelloWorldIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "DriveIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "TimeZoneIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "NewsIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "TrafficIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "CurrentWeatherIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ForecastWeatherIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "LookIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "NameIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "SmartIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "SeriousIntent",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "CurrentTime",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Introduce",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 14,
+        "x": 545.3333129882812,
+        "y": 545.6666564941406,
+        "wires": [
+            [
+                "e73cbbcb.33eda8",
+                "85ccf93.f77ca08"
+            ],
+            [
+                "15a39fa7.caa67"
+            ],
+            [
+                "e9d81268.f41dc"
+            ],
+            [
+                "8b2d81a4.54034"
+            ],
+            [
+                "1a2e30d9.6953ef"
+            ],
+            [
+                "8647d1ef.ac4ff"
+            ],
+            [
+                "45824a1c.829754"
+            ],
+            [
+                "25030d17.214672"
+            ],
+            [
+                "9d3b4e87.07e68"
+            ],
+            [
+                "abe5318f.2dfe3"
+            ],
+            [
+                "33512009.e8dc"
+            ],
+            [
+                "383c7f03.ea619"
+            ],
+            [
+                "8f347cf3.7dd0c"
+            ],
+            [
+                "3adb8fbb.7987c"
+            ]
+        ]
+    },
+    {
+        "id": "19870802.cd35b",
+        "type": "template",
+        "z": "df6518a5.58d298",
+        "name": "not driving",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Not driving at all",
+        "x": 758.142822265625,
+        "y": 254,
+        "wires": [
+            [
+                "8c9572d1.10d928",
+                "836f3de5.bc796"
+            ]
+        ]
+    },
+    {
+        "id": "8c9572d1.10d928",
+        "type": "template",
+        "z": "df6518a5.58d298",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 960.857177734375,
+        "y": 216,
+        "wires": [
+            [
+                "8dfc7aac.50176"
+            ]
+        ]
+    },
+    {
+        "id": "8dfc7aac.50176",
+        "type": "json",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "x": 1130,
+        "y": 261.28570556640625,
+        "wires": [
+            [
+                "2dbefd1e.7c201a"
+            ]
+        ]
+    },
+    {
+        "id": "2dbefd1e.7c201a",
+        "type": "http response",
+        "z": "df6518a5.58d298",
+        "name": "http",
+        "x": 1279.2857666015625,
+        "y": 273.5714416503906,
+        "wires": []
+    },
+    {
+        "id": "e9d81268.f41dc",
+        "type": "function",
+        "z": "df6518a5.58d298",
+        "name": "Driving",
+        "func": "context.ibmiot = context.ibmiot || null;\n\ncontext.intent = context.intent || null;\n var speedMsg  , intentMsg; \n\nif (msg.payload.request.type === 'IBMiot')\n    {\n    context.ibmiot = msg.payload;\n    var speedMsg = msg;\n     //speedMsg.payload = (msg.payload.request.rpm <= 1000) ? true : false;\n     //return [speedMsg , null];\n\n    }else if (msg.payload.request.type === 'IntentRequest')\n    {\n    context.intent = msg.payload;\n    var intentMsg = msg;\n    }\n    \n    \n\nif (context.intent !== null && context.ibmiot !== null)\n    {\n    //return ibmiot response to a function to calculate the speed\n    \n    \n    context.ibmiot = null;\n    context.intent = null;\n    return [intentMsg , null];  \n    \n    \n}else if (context.intent !== null && context.ibmiot === null){\n    //return output to a function saying not driving;\n    context.ibmiot = null;\n    context.intent = null;\n    return [null , intentMsg];\n\n}else if (context.intent === null && context.ibmiot !== null){\n    //return null on both the outputs so no action takes place.\n   // return [speedMsg, null];\n\n}else if (context.intent === null && context.ibmiot === null){\n    //This condition will never be satisfied.\n}\n",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 531.142822265625,
+        "y": 197.28570556640625,
+        "wires": [
+            [
+                "945e9389.6de718"
+            ],
+            [
+                "19870802.cd35b"
+            ]
+        ]
+    },
+    {
+        "id": "945e9389.6de718",
+        "type": "template",
+        "z": "df6518a5.58d298",
+        "name": "driving",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "driving well within the speed limits",
+        "x": 685,
+        "y": 108,
+        "wires": [
+            [
+                "bc0a21a7.76c9d8",
+                "1f7959f0.4daed6"
+            ]
+        ]
+    },
+    {
+        "id": "bc0a21a7.76c9d8",
+        "type": "template",
+        "z": "df6518a5.58d298",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 902,
+        "y": 108,
+        "wires": [
+            [
+                "c4fb9469.cb4f7"
+            ]
+        ]
+    },
+    {
+        "id": "c4fb9469.cb4f7",
+        "type": "json",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "x": 1112.142822265625,
+        "y": 139.28570556640625,
+        "wires": [
+            [
+                "5c996ef2.66277"
+            ]
+        ]
+    },
+    {
+        "id": "5c996ef2.66277",
+        "type": "http response",
+        "z": "df6518a5.58d298",
+        "name": "http",
+        "x": 1314.4285888671875,
+        "y": 136.57144165039062,
+        "wires": []
+    },
+    {
+        "id": "182bda8e.7af74d",
+        "type": "http response",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "x": 946.8333587646484,
+        "y": 1030.8333702087402,
+        "wires": []
+    },
+    {
+        "id": "10c2153c.0719a3",
+        "type": "http in",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "url": "/simple",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 381.1666946411133,
+        "y": 1030.8333616256714,
+        "wires": [
+            [
+                "14dbc230.b2c1ae"
+            ]
+        ]
+    },
+    {
+        "id": "51d038c5.589b",
+        "type": "template",
+        "z": "df6518a5.58d298",
+        "name": "Simple Web Page",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE HTML>\n<html>\n    <head>\n    <title>Smart Mirror Assistant</title>\n    <style>{{{payload.style}}}</style>\n    <script type=\"text/javascript\">\n        var ws;\n        var wsUri = \"ws:\";\n        var loc = window.location;\n        console.log(loc);\n        if (loc.protocol === \"https:\") { wsUri = \"wss:\"; }\n        // This needs to point to the web socket in the Node-RED flow\n        // ... in this case it's ws/simple\n        wsUri += \"//\" + loc.host + loc.pathname.replace(\"simple\",\"ws/simple\");\n        function wsConnect() {\n            console.log(\"connect\",wsUri);\n            ws = new WebSocket(wsUri);\n            //var line = \"\";    // either uncomment this for a building list of messages\n            \n            ws.onmessage = function(msg) {\n                var line = \"\";  // or uncomment this to overwrite the existing message\n                // parse the incoming message as a JSON object\n                var data = msg.data;\n                //console.log(data);\n                // build the output from the topic and payload parts of the object\n                line += \"<p>\"+data+\"</p>\";\n                // replace the messages div with the new \"line\"\n                document.getElementById('messages').innerHTML = line;\n                //ws.send(JSON.stringify({data:data}));\n            }\n            \n            ws.onopen = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"connected\";\n                //ws.send(\"Open for data\");\n                console.log(\"connected\");\n            }\n            \n            ws.onclose = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"not connected\";\n                // in case of lost connection tries to reconnect every 1 secs\n                setTimeout(wsConnect,1000);\n            }\n        }\n        \n        function doit(m) {\n            if (ws) { \n            ws.send(m);\n            }\n        }\n        \n    </script>\n    </head>\n    <body onload=\"wsConnect();\" onunload=\"ws.disconnect();\">\n        <font face=\"Arial\">\n        <div id=\"today\" style=\"font-size:50%\" align=\"right\">Sun Feb 26, 2017</div>\n        <h4><i>Hello, this is Jarvis!! Your Smart Mirror</i></h4>\n        <div id=\"successdisplay\" style=\"font-size:100%\">How can I Help!!\n\t\t</div>\n\t\t<hr/>\n        <div id=\"messages\" style=\"font-size:60%\"></div>\n        \n        \n        <!-- <div id=\"status\">unknown</div>-->\n        </font>\n    </body>\n    \n</html>\n",
+        "x": 774.8333587646484,
+        "y": 1030.8333702087402,
+        "wires": [
+            [
+                "182bda8e.7af74d"
+            ]
+        ]
+    },
+    {
+        "id": "6a77f7ed.136d08",
+        "type": "websocket in",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 762.8333587646484,
+        "y": 1142.8333702087402,
+        "wires": [
+            [
+                "49f188b7.98de2"
+            ]
+        ]
+    },
+    {
+        "id": "49f188b7.98de2",
+        "type": "debug",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 952.8333587646484,
+        "y": 1142.8333702087402,
+        "wires": []
+    },
+    {
+        "id": "14dbc230.b2c1ae",
+        "type": "template",
+        "z": "df6518a5.58d298",
+        "name": "css",
+        "field": "payload.style",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "html {\n  cursor: none;\n  overflow:hidden;\n}\n\n::-webkit-scrollbar { \n    display: none; \n}\n\nbody {\n  margin: 60px;\n  position: absolute;\n  height: calc(100% - 120px);\n  width: calc(100% - 120px);\n  background: #000;\n  color: #aaa;\n  font-family: \"Roboto Condensed\", sans-serif;\n  font-weight: 400;\n  font-size: 2.5em;\n  line-height: 1.5em;\n  -webkit-font-smoothing: antialiased;\n}\n\nli{\n\tmargin: 0 0 3px 0;\n}\n\nimg {\n    vertical-align: middle;\n}\n\n/**\n * Default styles.\n */\n\n.dimmed {\n  color: #666;\n}\n\n.normal {\n  color: #999;\n}\n\n.bright {\n  color: #fff;\n}\n\n.xsmall {\n  font-size: 15px;\n  line-height: 20px;\n}\n\n.small {\n  font-size: 20px;\n  line-height: 25px;\n}\n\n.medium {\n  font-size: 30px;\n  line-height: 35px;\n}\n\n.large {\n  font-size: 65px;\n  line-height: 65px;\n}\n\n.xlarge {\n  font-size: 75px;\n  line-height: 75px;\n  letter-spacing: -3px;\n}\n\n.thin {\n  font-family: Roboto, sans-serif;\n  font-weight: 100;\n}\n\n.light {\n  font-family: \"Roboto Condensed\", sans-serif;\n  font-weight: 300;\n}\n\n.regular {\n  font-family: \"Roboto Condensed\", sans-serif;\n  font-weight: 400;\n}\n\n.bold {\n  font-family: \"Roboto Condensed\", sans-serif;\n  font-weight: 700;\n}\n\n.align-right {\n  text-align: right;\n}\n\n.align-left {\n  text-align: left;\n}\n\nheader {\n  text-transform: uppercase;\n  font-size: 15px;\n  font-family: \"Roboto Condensed\";\n  font-weight: 400;\n  border-bottom: 1px solid #666;\n  line-height: 15px;\n  padding-bottom: 5px;\n  margin-bottom: 10px;\n  color: #999;\n}\n\nsup {\n  font-size: 50%;\n  line-height: 50%;\n}\n\ndiv.main {\n    height: 400px;\n    width: 600px;\n    background-color: blue;\n}\n\ndiv.icon{\n\n\tposition: absolute;\n    bottom: 50;\n    right: 0;\n    width: 300px;\n    border: 3px solid #73AD21;\n}\n\n\ndiv.location {\n    font-size:large;\n\tdisplay:table;\n}\n\ndiv.messages {\n    font-size:small;\n}\n\ndiv.description {\n\tdisplay:table-cell;\n\tvertical-align:middle;\t\n\tstyle=\"height: 64px;\"\n\tfont-size: 100px;\n}\n",
+        "x": 548.3333587646484,
+        "y": 1030.0000368754067,
+        "wires": [
+            [
+                "51d038c5.589b"
+            ]
+        ]
+    },
+    {
+        "id": "1f7959f0.4daed6",
+        "type": "websocket out",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 871,
+        "y": 46,
+        "wires": []
+    },
+    {
+        "id": "836f3de5.bc796",
+        "type": "websocket out",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 934,
+        "y": 288,
+        "wires": []
+    },
+    {
+        "id": "79289a0e.528164",
+        "type": "template",
+        "z": "df6518a5.58d298",
+        "name": "driving",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Driving above speed",
+        "x": 381,
+        "y": 2290,
+        "wires": [
+            [
+                "77ac5b5b.e835f4",
+                "5f72c0df.9ef2f"
+            ]
+        ]
+    },
+    {
+        "id": "5f72c0df.9ef2f",
+        "type": "websocket out",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 561,
+        "y": 2260,
+        "wires": []
+    },
+    {
+        "id": "77ac5b5b.e835f4",
+        "type": "template",
+        "z": "df6518a5.58d298",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 572,
+        "y": 2327,
+        "wires": [
+            [
+                "3eaed1ca.f1dd2e"
+            ]
+        ]
+    },
+    {
+        "id": "3eaed1ca.f1dd2e",
+        "type": "json",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "x": 782.142822265625,
+        "y": 2358.2857055664062,
+        "wires": [
+            [
+                "6f722eb3.62a9f"
+            ]
+        ]
+    },
+    {
+        "id": "6f722eb3.62a9f",
+        "type": "http response",
+        "z": "df6518a5.58d298",
+        "name": "http",
+        "x": 984.4285888671875,
+        "y": 2355.5714416503906,
+        "wires": []
+    },
+    {
+        "id": "77d7e1e5.a15e1",
+        "type": "websocket in",
+        "z": "291a27a2.d21df8",
+        "name": "",
+        "server": "7d961659.8bdb3",
+        "client": "",
+        "x": 692.5,
+        "y": 642.5,
+        "wires": [
+            [
+                "c351ad7a.17db58"
+            ]
+        ]
+    },
+    {
+        "id": "ad5210ab.4859c",
+        "type": "inject",
+        "z": "291a27a2.d21df8",
+        "name": "Tick every 5 secs",
+        "topic": "time",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 525.5,
+        "y": 577.5,
+        "wires": [
+            [
+                "46772275.0523dc"
+            ]
+        ]
+    },
+    {
+        "id": "27bba9b9.20b5b6",
+        "type": "websocket out",
+        "z": "291a27a2.d21df8",
+        "name": "",
+        "server": "f26b42f.a1e134",
+        "client": "",
+        "x": 972.5,
+        "y": 582.5,
+        "wires": []
+    },
+    {
+        "id": "83b99140.6009b8",
+        "type": "http response",
+        "z": "291a27a2.d21df8",
+        "name": "",
+        "x": 943.5,
+        "y": 522.5,
+        "wires": []
+    },
+    {
+        "id": "37fab2ed.45f35e",
+        "type": "http in",
+        "z": "291a27a2.d21df8",
+        "name": "",
+        "url": "/schedule",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 584.5,
+        "y": 522.5,
+        "wires": [
+            [
+                "172880e8.ac2b27"
+            ]
+        ]
+    },
+    {
+        "id": "172880e8.ac2b27",
+        "type": "template",
+        "z": "291a27a2.d21df8",
+        "name": "Simple Web Page",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE HTML>\n<html>\n    <head>\n    <title>Simple Live Display</title>\n    <script type=\"text/javascript\">\n        var ws;\n        var wsUri = \"ws:\";\n        var loc = window.location;\n        console.log(loc);\n        if (loc.protocol === \"https:\") { wsUri = \"wss:\"; }\n        // This needs to point to the web socket in the Node-RED flow\n        // ... in this case it's ws/simple\n        wsUri += \"//\" + loc.host + loc.pathname.replace(\"schedule\",\"ws/updateschedule\");\n\n        function wsConnect() {\n            if(msg.topic === 'time')\n            {\n                var timeMsg = msg;\n            }\n            console.log(\"connect\",wsUri);\n            ws = new WebSocket(wsUri);\n            //var line = \"\";    // either uncomment this for a building list of messages\n            ws.onmessage = function(timeMsg) {\n                var line = \"\";  // or uncomment this to overwrite the existing message\n                // parse the incoming message as a JSON object\n                var data = timeMsg.data;\n                //console.log(data);\n                // build the output from the topic and payload parts of the object\n                line += \"<p>\"+data+\"</p>\";\n                // replace the messages div with the new \"line\"\n                document.getElementById('messages').innerHTML = line;\n                //ws.send(JSON.stringify({data:data}));\n            }\n            ws.onopen = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"connected\";\n                //ws.send(\"Open for data\");\n                console.log(\"connected\");\n            }\n            ws.onclose = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"not connected\";\n                // in case of lost connection tries to reconnect every 3 secs\n                setTimeout(wsConnect,3000);\n            }\n        }\n        \n        function doit(m) {\n            if (ws) { ws.send(m); }\n        }\n    </script>\n    </head>\n    <body onload=\"wsConnect();\" onunload=\"ws.disconnect();\">\n        <font face=\"Arial\">\n        <h1>Simple Live Display</h1>\n        <div id=\"messages\"></div>\n        <button type=\"button\" onclick='doit(\"click\");'>Click to send message</button>\n        <hr/>\n        <div id=\"status\">unknown</div>\n        </font>\n    </body>\n</html>\n",
+        "x": 771.5,
+        "y": 522.5,
+        "wires": [
+            [
+                "83b99140.6009b8"
+            ]
+        ]
+    },
+    {
+        "id": "46772275.0523dc",
+        "type": "function",
+        "z": "291a27a2.d21df8",
+        "name": "format time nicely",
+        "func": "msg.payload = Date(msg.payload).toString();\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 760.5,
+        "y": 582.5,
+        "wires": [
+            [
+                "27bba9b9.20b5b6",
+                "c3ce390a.1021a8"
+            ]
+        ]
+    },
+    {
+        "id": "c351ad7a.17db58",
+        "type": "debug",
+        "z": "291a27a2.d21df8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 918.5,
+        "y": 642.5,
+        "wires": []
+    },
+    {
+        "id": "51360c44.aae484",
+        "type": "http request",
+        "z": "a2a2101b.a5c09",
+        "name": "Get Current Weather",
+        "method": "GET",
+        "ret": "obj",
+        "url": "http://api.apixu.com/v1/forecast.json?key=ace5a435cc774be5a7510002172502&q=61704&days=1",
+        "tls": "",
+        "x": 345,
+        "y": 135,
+        "wires": [
+            [
+                "f2d59718.9bd6f8",
+                "e5425b84.14a758",
+                "8b5aba3b.b1b7b8"
+            ]
+        ]
+    },
+    {
+        "id": "f2d59718.9bd6f8",
+        "type": "template",
+        "z": "a2a2101b.a5c09",
+        "name": "Current weather Mirror",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<br>It is currently  {{payload.current.condition.text}} now, with temperature of {{payload.current.temp_f}} degree Fahrenheit <br>",
+        "x": 607.5000076293945,
+        "y": 58.75000286102295,
+        "wires": [
+            [
+                "c4ab91c3.6b42a"
+            ]
+        ]
+    },
+    {
+        "id": "45824a1c.829754",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Current Weather",
+        "links": [
+            "e645cc6c.cc26b"
+        ],
+        "x": 883.5,
+        "y": 477,
+        "wires": []
+    },
+    {
+        "id": "e645cc6c.cc26b",
+        "type": "link in",
+        "z": "a2a2101b.a5c09",
+        "name": "Current Weather",
+        "links": [
+            "45824a1c.829754"
+        ],
+        "x": 125.00000190734863,
+        "y": 135.00000190734863,
+        "wires": [
+            [
+                "51360c44.aae484"
+            ]
+        ]
+    },
+    {
+        "id": "31c2d04.f2c863",
+        "type": "template",
+        "z": "a2a2101b.a5c09",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 830.0000114440918,
+        "y": 273.75000381469727,
+        "wires": [
+            [
+                "230db1d9.08c25e"
+            ]
+        ]
+    },
+    {
+        "id": "230db1d9.08c25e",
+        "type": "json",
+        "z": "a2a2101b.a5c09",
+        "name": "",
+        "x": 1023.0000762939453,
+        "y": 273.08337783813477,
+        "wires": [
+            [
+                "d21a8366.f2a9a"
+            ]
+        ]
+    },
+    {
+        "id": "d21a8366.f2a9a",
+        "type": "http response",
+        "z": "a2a2101b.a5c09",
+        "name": "http",
+        "x": 1181.7859077453613,
+        "y": 272.15478897094727,
+        "wires": []
+    },
+    {
+        "id": "e5425b84.14a758",
+        "type": "template",
+        "z": "a2a2101b.a5c09",
+        "name": "Current weather Alexa",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "It is currently  {{payload.current.condition.text}} now, with temperature of {{payload.current.temp_f}} degree Fahrenheit",
+        "x": 582.5,
+        "y": 273.75,
+        "wires": [
+            [
+                "31c2d04.f2c863"
+            ]
+        ]
+    },
+    {
+        "id": "b8a2c3cd.6fede",
+        "type": "http request",
+        "z": "a2a2101b.a5c09",
+        "name": "Get Forecast Weather",
+        "method": "GET",
+        "ret": "obj",
+        "url": "http://api.apixu.com/v1/forecast.json?key=ace5a435cc774be5a7510002172502&q=61704&days=1",
+        "tls": "",
+        "x": 342.50000762939453,
+        "y": 527.5000076293945,
+        "wires": [
+            [
+                "3d315724.6629b8",
+                "8629aa04.9b2918"
+            ]
+        ]
+    },
+    {
+        "id": "3d315724.6629b8",
+        "type": "template",
+        "z": "a2a2101b.a5c09",
+        "name": "Forecast weather Mirror",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<br>{{payload.forecast.forecastday.0.day.condition.text}} today, with maximum temperature of {{payload.forecast.forecastday.0.day.maxtemp_f}} degree Fahrenheit and minimum temperature of {{payload.forecast.forecastday.0.day.mintemp_f}} degree Fahrenheit<br>",
+        "x": 612.5000076293945,
+        "y": 420.00000762939453,
+        "wires": [
+            [
+                "5d126c9e.4314d4"
+            ]
+        ]
+    },
+    {
+        "id": "8629aa04.9b2918",
+        "type": "template",
+        "z": "a2a2101b.a5c09",
+        "name": "Forecst weather Alexa",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.forecast.forecastday.0.day.condition.text}} today, with maximum temperature of {{payload.forecast.forecastday.0.day.maxtemp_f}} degree Fahrenheit and minimum temperature of {{payload.forecast.forecastday.0.day.mintemp_f}} degree Fahrenheit",
+        "x": 605,
+        "y": 643.75,
+        "wires": [
+            [
+                "c0d16aea.953d78"
+            ]
+        ]
+    },
+    {
+        "id": "c0d16aea.953d78",
+        "type": "template",
+        "z": "a2a2101b.a5c09",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 852.5000114440918,
+        "y": 643.7500038146973,
+        "wires": [
+            [
+                "d7bf45e1.62bca8"
+            ]
+        ]
+    },
+    {
+        "id": "5d126c9e.4314d4",
+        "type": "websocket out",
+        "z": "a2a2101b.a5c09",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 910.0000114440918,
+        "y": 427.50000762939453,
+        "wires": []
+    },
+    {
+        "id": "d7bf45e1.62bca8",
+        "type": "json",
+        "z": "a2a2101b.a5c09",
+        "name": "",
+        "x": 1045.5000762939453,
+        "y": 643.0833778381348,
+        "wires": [
+            [
+                "5fb7c1d2.5f29f"
+            ]
+        ]
+    },
+    {
+        "id": "5fb7c1d2.5f29f",
+        "type": "http response",
+        "z": "a2a2101b.a5c09",
+        "name": "http",
+        "x": 1204.2859077453613,
+        "y": 642.1547889709473,
+        "wires": []
+    },
+    {
+        "id": "6d193d6a.821514",
+        "type": "link in",
+        "z": "a2a2101b.a5c09",
+        "name": "Forecast weather",
+        "links": [
+            "25030d17.214672"
+        ],
+        "x": 136.25000190734863,
+        "y": 526.2500076293945,
+        "wires": [
+            [
+                "b8a2c3cd.6fede"
+            ]
+        ]
+    },
+    {
+        "id": "25030d17.214672",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Forecast weather",
+        "links": [
+            "6d193d6a.821514"
+        ],
+        "x": 920.5,
+        "y": 501.75,
+        "wires": []
+    },
+    {
+        "id": "9cf83a2d.52ade8",
+        "type": "function",
+        "z": "4bb0a340.a70ccc",
+        "name": "add http header",
+        "func": "msg.headers = {\n    \"Content-Type\": \"application/x-www-form-urlencoded\"\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 266.25,
+        "y": 131.25,
+        "wires": [
+            [
+                "39d723b5.b920dc"
+            ]
+        ]
+    },
+    {
+        "id": "39d723b5.b920dc",
+        "type": "http request",
+        "z": "4bb0a340.a70ccc",
+        "name": "get traffic",
+        "method": "GET",
+        "ret": "obj",
+        "url": "https://www.mapquestapi.com/traffic/v2/incidents?&outFormat=json&boundingBox=41.95055394133776%2C-87.47039794921874%2C41.81584950164211%2C-87.79449462890625&key=FH5SwSGGk43fnpqWK8Bxj4PFeZGOXD3q",
+        "tls": "",
+        "x": 496.2500991821289,
+        "y": 130.41662979125977,
+        "wires": [
+            [
+                "198d4796.b194a8",
+                "bd3b154d.e7a8a8",
+                "56387d92.780cf4"
+            ]
+        ]
+    },
+    {
+        "id": "56387d92.780cf4",
+        "type": "function",
+        "z": "4bb0a340.a70ccc",
+        "name": "Verify any incidents",
+        "func": "if (msg.payload.incidents.length ===0){\n    msg.payload = JSON.stringify('There are no incidents. You can start your journey!');\nreturn [null,msg];\n}\nelse\n{\n    //var msg1,i;\n    //msg1={};\n    //for (i=0;i<msg.payload.incidents.length - 1;i++){\n       //msg1 = msg1+msg.payload.incidents[i].shortDesc;\n       \n   //}\n   //msg1.payload = msg1;\n   //msg.payload = JSON.stringify(msg1.payload);\n   return [msg,null];\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 733.3332633972168,
+        "y": 395.4166946411133,
+        "wires": [
+            [
+                "d76963b2.95d26",
+                "cbfe317d.a20ff"
+            ],
+            [
+                "ed3ccdcb.bd6"
+            ]
+        ]
+    },
+    {
+        "id": "bd3b154d.e7a8a8",
+        "type": "template",
+        "z": "4bb0a340.a70ccc",
+        "name": "first news",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.incidents.0.shortDesc}}",
+        "x": 780.4166374206543,
+        "y": 162.91669273376465,
+        "wires": [
+            [
+                "a10b586e.818368",
+                "c48d8a7b.13ba28"
+            ]
+        ]
+    },
+    {
+        "id": "198d4796.b194a8",
+        "type": "debug",
+        "z": "4bb0a340.a70ccc",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 813.750072479248,
+        "y": 89.58328628540039,
+        "wires": []
+    },
+    {
+        "id": "a10b586e.818368",
+        "type": "debug",
+        "z": "4bb0a340.a70ccc",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 1018.3333892822266,
+        "y": 161.66672229766846,
+        "wires": []
+    },
+    {
+        "id": "c48d8a7b.13ba28",
+        "type": "function",
+        "z": "4bb0a340.a70ccc",
+        "name": "if empty",
+        "func": "if (msg.payload === \"\"){\n    msg.payload = \"No incidents at all\";\n    return msg;\n}\nelse\n{\nreturn msg;    \n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 965.8333282470703,
+        "y": 238.3333797454834,
+        "wires": [
+            [
+                "1073b3dd.2028fc"
+            ]
+        ]
+    },
+    {
+        "id": "d76963b2.95d26",
+        "type": "debug",
+        "z": "4bb0a340.a70ccc",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 1010.4165153503418,
+        "y": 335.83343982696533,
+        "wires": []
+    },
+    {
+        "id": "cbfe317d.a20ff",
+        "type": "template",
+        "z": "4bb0a340.a70ccc",
+        "name": "traffic web template",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<br>Traffic incidents in your area,<br>\n{{payload.incidents.0.shortDesc}}<br>\n{{payload.incidents.1.shortDesc}}<br>\n{{payload.incidents.2.shortDesc}}<br>\n{{payload.incidents.3.shortDesc}}<br>\n{{payload.incidents.4.shortDesc}}<br>",
+        "x": 1000.0000152587891,
+        "y": 395.83344078063965,
+        "wires": [
+            [
+                "faffe430.388d18"
+            ]
+        ]
+    },
+    {
+        "id": "ed3ccdcb.bd6",
+        "type": "template",
+        "z": "4bb0a340.a70ccc",
+        "name": "traffic web template",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<br>There are no incidents in your area, Good luck for your journey!",
+        "x": 1008.7500152587891,
+        "y": 473.7500686645508,
+        "wires": [
+            [
+                "c025a24e.e62f2"
+            ]
+        ]
+    },
+    {
+        "id": "1073b3dd.2028fc",
+        "type": "template",
+        "z": "4bb0a340.a70ccc",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 1171.2498970031738,
+        "y": 242.91669273376465,
+        "wires": [
+            [
+                "15cdde0d.f194f2"
+            ]
+        ]
+    },
+    {
+        "id": "15cdde0d.f194f2",
+        "type": "json",
+        "z": "4bb0a340.a70ccc",
+        "name": "",
+        "x": 1387.999900817871,
+        "y": 249.75006675720215,
+        "wires": [
+            [
+                "49dc56ef.a0ab48"
+            ]
+        ]
+    },
+    {
+        "id": "faffe430.388d18",
+        "type": "websocket out",
+        "z": "4bb0a340.a70ccc",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 1221.6665229797363,
+        "y": 415.4165725708008,
+        "wires": []
+    },
+    {
+        "id": "c025a24e.e62f2",
+        "type": "websocket out",
+        "z": "4bb0a340.a70ccc",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 1236.6665229797363,
+        "y": 494.5831995010376,
+        "wires": []
+    },
+    {
+        "id": "49dc56ef.a0ab48",
+        "type": "http response",
+        "z": "4bb0a340.a70ccc",
+        "name": "http",
+        "x": 1591.369041442871,
+        "y": 249.65482139587402,
+        "wires": []
+    },
+    {
+        "id": "bca17f6a.ce2cf",
+        "type": "link in",
+        "z": "4bb0a340.a70ccc",
+        "name": "Traffic",
+        "links": [
+            "8647d1ef.ac4ff"
+        ],
+        "x": 65,
+        "y": 131.25,
+        "wires": [
+            [
+                "9cf83a2d.52ade8"
+            ]
+        ]
+    },
+    {
+        "id": "8647d1ef.ac4ff",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Traffic",
+        "links": [
+            "bca17f6a.ce2cf"
+        ],
+        "x": 918.5,
+        "y": 451,
+        "wires": []
+    },
+    {
+        "id": "21c51e.7f1ceae2",
+        "type": "http request",
+        "z": "be5804a0.ac3408",
+        "name": "get news from bing",
+        "method": "GET",
+        "ret": "obj",
+        "url": "https://api.cognitive.microsoft.com/bing/v5.0/news/search?q=top stories&count=5&offset=0&mkt=en-us&safeSearch=Moderate",
+        "tls": "",
+        "x": 551.2500076293945,
+        "y": 161.25000381469727,
+        "wires": [
+            [
+                "7d8e050.8db09fc",
+                "f07e115f.c6f55",
+                "9b7b5276.eb914"
+            ]
+        ]
+    },
+    {
+        "id": "2cb9c94c.0d4246",
+        "type": "function",
+        "z": "be5804a0.ac3408",
+        "name": "add http header",
+        "func": "msg.headers = {\n    \"Content-Type\": \"application/x-www-form-urlencoded\",\n    \"Ocp-Apim-Subscription-Key\":\"a00545aa3fbe425b89b27863b6718c0a\"\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 348.33333333333337,
+        "y": 161.66666666666663,
+        "wires": [
+            [
+                "21c51e.7f1ceae2"
+            ]
+        ]
+    },
+    {
+        "id": "7d8e050.8db09fc",
+        "type": "template",
+        "z": "be5804a0.ac3408",
+        "name": "news template",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<br>Here are the top stories, <br>\n1. {{payload.value.0.name}}<br>\n2. {{payload.value.1.name}}<br>\n3. {{payload.value.2.name}}<br>\n4. {{payload.value.3.name}}<br>\n5. {{payload.value.4.name}}<br>",
+        "x": 816.7500762939453,
+        "y": 275.16669178009033,
+        "wires": [
+            [
+                "c85885dd.9a15c8"
+            ]
+        ]
+    },
+    {
+        "id": "c85885dd.9a15c8",
+        "type": "websocket out",
+        "z": "be5804a0.ac3408",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 1087.416763305664,
+        "y": 271.66669273376465,
+        "wires": []
+    },
+    {
+        "id": "f07e115f.c6f55",
+        "type": "template",
+        "z": "be5804a0.ac3408",
+        "name": "first news",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.value.0.name}}",
+        "x": 801.8333282470703,
+        "y": 166.25000381469727,
+        "wires": [
+            [
+                "99c002db.37d1f"
+            ]
+        ]
+    },
+    {
+        "id": "99c002db.37d1f",
+        "type": "template",
+        "z": "be5804a0.ac3408",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 1056.8333892822266,
+        "y": 174.25000381469727,
+        "wires": [
+            [
+                "b4d08526.59a6c8"
+            ]
+        ]
+    },
+    {
+        "id": "b4d08526.59a6c8",
+        "type": "json",
+        "z": "be5804a0.ac3408",
+        "name": "",
+        "x": 1318.5833930969238,
+        "y": 174.83337783813477,
+        "wires": [
+            [
+                "af1b5ee.ae5cca"
+            ]
+        ]
+    },
+    {
+        "id": "af1b5ee.ae5cca",
+        "type": "http response",
+        "z": "be5804a0.ac3408",
+        "name": "http",
+        "x": 1525.702537536621,
+        "y": 177.23816299438477,
+        "wires": []
+    },
+    {
+        "id": "9b7b5276.eb914",
+        "type": "debug",
+        "z": "be5804a0.ac3408",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 787.9166984558105,
+        "y": 90.41670513153076,
+        "wires": []
+    },
+    {
+        "id": "ce259a7b.4c7f88",
+        "type": "link in",
+        "z": "be5804a0.ac3408",
+        "name": "News",
+        "links": [
+            "1a2e30d9.6953ef"
+        ],
+        "x": 128.75,
+        "y": 161.25,
+        "wires": [
+            [
+                "2cb9c94c.0d4246"
+            ]
+        ]
+    },
+    {
+        "id": "1a2e30d9.6953ef",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "News",
+        "links": [
+            "ce259a7b.4c7f88"
+        ],
+        "x": 880,
+        "y": 427.5,
+        "wires": []
+    },
+    {
+        "id": "cdfe38b6.118778",
+        "type": "link in",
+        "z": "1a4c711a.6ec0af",
+        "name": "Look Intent",
+        "links": [
+            "9d3b4e87.07e68"
+        ],
+        "x": 92,
+        "y": 124,
+        "wires": [
+            [
+                "3007a256.6e43ee"
+            ]
+        ]
+    },
+    {
+        "id": "9d3b4e87.07e68",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Look Intent",
+        "links": [
+            "cdfe38b6.118778"
+        ],
+        "x": 883,
+        "y": 525,
+        "wires": []
+    },
+    {
+        "id": "6ac751ef.96c3e",
+        "type": "template",
+        "z": "99964d17.db257",
+        "name": "say Hello",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Hello World",
+        "x": 436,
+        "y": 141,
+        "wires": [
+            [
+                "3f8e47c4.84cf48",
+                "4815d424.1ed25c"
+            ]
+        ]
+    },
+    {
+        "id": "3f8e47c4.84cf48",
+        "type": "template",
+        "z": "99964d17.db257",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 618.5712890625,
+        "y": 142.5714111328125,
+        "wires": [
+            [
+                "9a4c42e1.fc504"
+            ]
+        ]
+    },
+    {
+        "id": "4815d424.1ed25c",
+        "type": "websocket out",
+        "z": "99964d17.db257",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 602.03564453125,
+        "y": 91.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "9a4c42e1.fc504",
+        "type": "json",
+        "z": "99964d17.db257",
+        "name": "",
+        "x": 797.9998779296875,
+        "y": 145.857177734375,
+        "wires": [
+            [
+                "13948a8c.9b2015"
+            ]
+        ]
+    },
+    {
+        "id": "13948a8c.9b2015",
+        "type": "http response",
+        "z": "99964d17.db257",
+        "name": "http",
+        "x": 963.28564453125,
+        "y": 142.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "5cd66e66.75829",
+        "type": "link in",
+        "z": "99964d17.db257",
+        "name": "Hello world",
+        "links": [
+            "15a39fa7.caa67"
+        ],
+        "x": 202,
+        "y": 145,
+        "wires": [
+            [
+                "6ac751ef.96c3e"
+            ]
+        ]
+    },
+    {
+        "id": "15a39fa7.caa67",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Hello world",
+        "links": [
+            "5cd66e66.75829"
+        ],
+        "x": 870,
+        "y": 378,
+        "wires": []
+    },
+    {
+        "id": "2d643a4a.c262a6",
+        "type": "http request",
+        "z": "8533b372.8198f",
+        "name": "get time zone",
+        "method": "GET",
+        "ret": "obj",
+        "url": "https://maps.googleapis.com/maps/api/timezone/json?location=40.4841,-88.9937&timestamp=1458000000&key=AIzaSyDatNfYBbLunXW1zkmXBfy1AyoegIlIq2g",
+        "tls": "",
+        "x": 426,
+        "y": 159,
+        "wires": [
+            [
+                "12af3ee9.429661",
+                "c4f8f8d0.17bed8"
+            ]
+        ]
+    },
+    {
+        "id": "84621e10.446f6",
+        "type": "json",
+        "z": "8533b372.8198f",
+        "name": "",
+        "x": 1083.3333333333335,
+        "y": 221.33333333333337,
+        "wires": [
+            [
+                "d459c98.c558a38"
+            ]
+        ]
+    },
+    {
+        "id": "d459c98.c558a38",
+        "type": "http response",
+        "z": "8533b372.8198f",
+        "name": "http",
+        "x": 1249.619099934896,
+        "y": 217.90474446614587,
+        "wires": []
+    },
+    {
+        "id": "a9c8f344.9fcd5",
+        "type": "websocket out",
+        "z": "8533b372.8198f",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 927.999959309896,
+        "y": 160.33327229817712,
+        "wires": []
+    },
+    {
+        "id": "12af3ee9.429661",
+        "type": "template",
+        "z": "8533b372.8198f",
+        "name": "timezone",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.timeZoneName}}",
+        "x": 599.3332722981772,
+        "y": 223.99995930989587,
+        "wires": [
+            [
+                "118a8f72.cd98e1",
+                "a9c8f344.9fcd5"
+            ]
+        ]
+    },
+    {
+        "id": "118a8f72.cd98e1",
+        "type": "template",
+        "z": "8533b372.8198f",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 825.3332722981772,
+        "y": 221.99995930989587,
+        "wires": [
+            [
+                "84621e10.446f6"
+            ]
+        ]
+    },
+    {
+        "id": "4696dadd.75fb44",
+        "type": "link in",
+        "z": "8533b372.8198f",
+        "name": "Time zone",
+        "links": [
+            "8b2d81a4.54034"
+        ],
+        "x": 208,
+        "y": 157,
+        "wires": [
+            [
+                "2d643a4a.c262a6"
+            ]
+        ]
+    },
+    {
+        "id": "8b2d81a4.54034",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Time zone",
+        "links": [
+            "4696dadd.75fb44"
+        ],
+        "x": 911,
+        "y": 399,
+        "wires": []
+    },
+    {
+        "id": "3007a256.6e43ee",
+        "type": "template",
+        "z": "1a4c711a.6ec0af",
+        "name": "Look",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "You look Gorgeous,My Dear!",
+        "x": 245,
+        "y": 117,
+        "wires": [
+            [
+                "98a355e2.c830a8",
+                "79fa1378.012c5c"
+            ]
+        ]
+    },
+    {
+        "id": "98a355e2.c830a8",
+        "type": "template",
+        "z": "1a4c711a.6ec0af",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 437.5712890625,
+        "y": 118.5714111328125,
+        "wires": [
+            [
+                "4828153e.1102ec"
+            ]
+        ]
+    },
+    {
+        "id": "79fa1378.012c5c",
+        "type": "websocket out",
+        "z": "1a4c711a.6ec0af",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 421.03564453125,
+        "y": 67.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "4828153e.1102ec",
+        "type": "json",
+        "z": "1a4c711a.6ec0af",
+        "name": "",
+        "x": 616.9998779296875,
+        "y": 121.857177734375,
+        "wires": [
+            [
+                "2da83e3c.201d62"
+            ]
+        ]
+    },
+    {
+        "id": "2da83e3c.201d62",
+        "type": "http response",
+        "z": "1a4c711a.6ec0af",
+        "name": "http",
+        "x": 782.28564453125,
+        "y": 118.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "c4f8f8d0.17bed8",
+        "type": "debug",
+        "z": "8533b372.8198f",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 613,
+        "y": 114,
+        "wires": []
+    },
+    {
+        "id": "e73cbbcb.33eda8",
+        "type": "debug",
+        "z": "df6518a5.58d298",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 699,
+        "y": 359,
+        "wires": []
+    },
+    {
+        "id": "8f6b9dc3.e9f43",
+        "type": "template",
+        "z": "972cc76c.a236e8",
+        "name": "Learning",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Sorry!! I do not have the skill. You should know that am still a child and learning fast.",
+        "x": 391,
+        "y": 179,
+        "wires": [
+            [
+                "5ee38933.b9bd98",
+                "e6a461d2.a5887"
+            ]
+        ]
+    },
+    {
+        "id": "5ee38933.b9bd98",
+        "type": "template",
+        "z": "972cc76c.a236e8",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 573.5712890625,
+        "y": 180.5714111328125,
+        "wires": [
+            [
+                "16ff5ee6.784061"
+            ]
+        ]
+    },
+    {
+        "id": "e6a461d2.a5887",
+        "type": "websocket out",
+        "z": "972cc76c.a236e8",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 557.03564453125,
+        "y": 129.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "16ff5ee6.784061",
+        "type": "json",
+        "z": "972cc76c.a236e8",
+        "name": "",
+        "x": 752.9998779296875,
+        "y": 183.857177734375,
+        "wires": [
+            [
+                "83ba5125.24f43"
+            ]
+        ]
+    },
+    {
+        "id": "83ba5125.24f43",
+        "type": "http response",
+        "z": "972cc76c.a236e8",
+        "name": "http",
+        "x": 918.28564453125,
+        "y": 180.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "1c178ca2.fb3463",
+        "type": "link in",
+        "z": "972cc76c.a236e8",
+        "name": "Still Learning",
+        "links": [
+            "85ccf93.f77ca08"
+        ],
+        "x": 157,
+        "y": 183,
+        "wires": [
+            [
+                "8f6b9dc3.e9f43"
+            ]
+        ]
+    },
+    {
+        "id": "85ccf93.f77ca08",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Still Learning",
+        "links": [
+            "1c178ca2.fb3463"
+        ],
+        "x": 902,
+        "y": 354,
+        "wires": []
+    },
+    {
+        "id": "fb268734.7e7e98",
+        "type": "template",
+        "z": "56b93e94.bd85f",
+        "name": "Name",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Deepak, why do you ask the same stupid question? Do you not know your name?",
+        "x": 431,
+        "y": 141,
+        "wires": [
+            [
+                "303f6159.c33eae",
+                "547d4ebd.455cc"
+            ]
+        ]
+    },
+    {
+        "id": "303f6159.c33eae",
+        "type": "template",
+        "z": "56b93e94.bd85f",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 623.5712890625,
+        "y": 142.5714111328125,
+        "wires": [
+            [
+                "9aae9f38.e9415"
+            ]
+        ]
+    },
+    {
+        "id": "547d4ebd.455cc",
+        "type": "websocket out",
+        "z": "56b93e94.bd85f",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 607.03564453125,
+        "y": 91.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "9aae9f38.e9415",
+        "type": "json",
+        "z": "56b93e94.bd85f",
+        "name": "",
+        "x": 802.9998779296875,
+        "y": 145.857177734375,
+        "wires": [
+            [
+                "348e58c.6a0a9a8"
+            ]
+        ]
+    },
+    {
+        "id": "348e58c.6a0a9a8",
+        "type": "http response",
+        "z": "56b93e94.bd85f",
+        "name": "http",
+        "x": 968.28564453125,
+        "y": 142.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "6dd32dd6.ac6d74",
+        "type": "link in",
+        "z": "56b93e94.bd85f",
+        "name": "Name",
+        "links": [
+            "abe5318f.2dfe3"
+        ],
+        "x": 207,
+        "y": 145,
+        "wires": [
+            [
+                "fb268734.7e7e98"
+            ]
+        ]
+    },
+    {
+        "id": "abe5318f.2dfe3",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Name",
+        "links": [
+            "6dd32dd6.ac6d74"
+        ],
+        "x": 926,
+        "y": 548,
+        "wires": []
+    },
+    {
+        "id": "33512009.e8dc",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Samrt person",
+        "links": [
+            "18fabc4c.ff0334"
+        ],
+        "x": 881,
+        "y": 579,
+        "wires": []
+    },
+    {
+        "id": "383c7f03.ea619",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Serious",
+        "links": [
+            "fdf9e287.9fc8c"
+        ],
+        "x": 930,
+        "y": 601,
+        "wires": []
+    },
+    {
+        "id": "8f347cf3.7dd0c",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Current Time",
+        "links": [
+            "bbf263b2.8f109"
+        ],
+        "x": 887,
+        "y": 629,
+        "wires": []
+    },
+    {
+        "id": "3adb8fbb.7987c",
+        "type": "link out",
+        "z": "df6518a5.58d298",
+        "name": "Introduce",
+        "links": [
+            "ed601e6c.a917d"
+        ],
+        "x": 922,
+        "y": 659,
+        "wires": []
+    },
+    {
+        "id": "6dfd8498.829fec",
+        "type": "template",
+        "z": "56b93e94.bd85f",
+        "name": "Smart",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Hmmm, ofcourse it is Dharmaraj Chandresaekaran",
+        "x": 436,
+        "y": 296,
+        "wires": [
+            [
+                "805214b1.d3b088",
+                "5577d173.3e158"
+            ]
+        ]
+    },
+    {
+        "id": "805214b1.d3b088",
+        "type": "template",
+        "z": "56b93e94.bd85f",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 628.5712890625,
+        "y": 297.5714111328125,
+        "wires": [
+            [
+                "9057de75.fca8b"
+            ]
+        ]
+    },
+    {
+        "id": "5577d173.3e158",
+        "type": "websocket out",
+        "z": "56b93e94.bd85f",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 612.03564453125,
+        "y": 246.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "9057de75.fca8b",
+        "type": "json",
+        "z": "56b93e94.bd85f",
+        "name": "",
+        "x": 807.9998779296875,
+        "y": 300.857177734375,
+        "wires": [
+            [
+                "8c031498.7a1888"
+            ]
+        ]
+    },
+    {
+        "id": "8c031498.7a1888",
+        "type": "http response",
+        "z": "56b93e94.bd85f",
+        "name": "http",
+        "x": 973.28564453125,
+        "y": 297.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "18fabc4c.ff0334",
+        "type": "link in",
+        "z": "56b93e94.bd85f",
+        "name": "Samrt person",
+        "links": [
+            "33512009.e8dc"
+        ],
+        "x": 212,
+        "y": 300,
+        "wires": [
+            [
+                "6dfd8498.829fec"
+            ]
+        ]
+    },
+    {
+        "id": "b2c456bf.a693f8",
+        "type": "template",
+        "z": "56b93e94.bd85f",
+        "name": "Serious",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Nahh, I was just kidding.",
+        "x": 454,
+        "y": 441,
+        "wires": [
+            [
+                "df8a6e9f.3a298",
+                "c0a00b52.762ad8"
+            ]
+        ]
+    },
+    {
+        "id": "df8a6e9f.3a298",
+        "type": "template",
+        "z": "56b93e94.bd85f",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 636.5712890625,
+        "y": 442.5714111328125,
+        "wires": [
+            [
+                "d9a72c08.4fbe8"
+            ]
+        ]
+    },
+    {
+        "id": "c0a00b52.762ad8",
+        "type": "websocket out",
+        "z": "56b93e94.bd85f",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 620.03564453125,
+        "y": 391.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "d9a72c08.4fbe8",
+        "type": "json",
+        "z": "56b93e94.bd85f",
+        "name": "",
+        "x": 815.9998779296875,
+        "y": 445.857177734375,
+        "wires": [
+            [
+                "9d2d7eff.48e9a"
+            ]
+        ]
+    },
+    {
+        "id": "9d2d7eff.48e9a",
+        "type": "http response",
+        "z": "56b93e94.bd85f",
+        "name": "http",
+        "x": 981.28564453125,
+        "y": 442.4285888671875,
+        "wires": []
+    },
+    {
+        "id": "fdf9e287.9fc8c",
+        "type": "link in",
+        "z": "56b93e94.bd85f",
+        "name": "Serious",
+        "links": [
+            "383c7f03.ea619"
+        ],
+        "x": 220,
+        "y": 445,
+        "wires": [
+            [
+                "b2c456bf.a693f8"
+            ]
+        ]
+    },
+    {
+        "id": "c3ce390a.1021a8",
+        "type": "debug",
+        "z": "291a27a2.d21df8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 1105,
+        "y": 521,
+        "wires": []
+    },
+    {
+        "id": "8b5aba3b.b1b7b8",
+        "type": "debug",
+        "z": "a2a2101b.a5c09",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 611,
+        "y": 132,
+        "wires": []
+    },
+    {
+        "id": "5e375bc0.a85a74",
+        "type": "http request",
+        "z": "8533b372.8198f",
+        "name": "Get Current time",
+        "method": "GET",
+        "ret": "obj",
+        "url": "http://api.apixu.com/v1/forecast.json?key=ace5a435cc774be5a7510002172502&q=61704&days=1",
+        "tls": "",
+        "x": 410.99999809265137,
+        "y": 444,
+        "wires": [
+            [
+                "6a1027d0.50cd08",
+                "3d0af239.141e2e",
+                "8befba53.5ce5c8"
+            ]
+        ]
+    },
+    {
+        "id": "6a1027d0.50cd08",
+        "type": "template",
+        "z": "8533b372.8198f",
+        "name": "Current time Mirror",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<br>It's {{payload.current.last_updated}}<br>",
+        "x": 683.5000057220459,
+        "y": 367.75000286102295,
+        "wires": [
+            [
+                "e0c30a1a.b71718"
+            ]
+        ]
+    },
+    {
+        "id": "bbf263b2.8f109",
+        "type": "link in",
+        "z": "8533b372.8198f",
+        "name": "Current Time",
+        "links": [
+            "8f347cf3.7dd0c"
+        ],
+        "x": 211,
+        "y": 444.00000190734863,
+        "wires": [
+            [
+                "5e375bc0.a85a74"
+            ]
+        ]
+    },
+    {
+        "id": "81e57177.f5a9",
+        "type": "template",
+        "z": "8533b372.8198f",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 916.0000095367432,
+        "y": 582.7500038146973,
+        "wires": [
+            [
+                "a55b1845.f1f3b8"
+            ]
+        ]
+    },
+    {
+        "id": "a55b1845.f1f3b8",
+        "type": "json",
+        "z": "8533b372.8198f",
+        "name": "",
+        "x": 1109.0000743865967,
+        "y": 582.0833778381348,
+        "wires": [
+            [
+                "64889c7.1556f64"
+            ]
+        ]
+    },
+    {
+        "id": "64889c7.1556f64",
+        "type": "http response",
+        "z": "8533b372.8198f",
+        "name": "http",
+        "x": 1267.7859058380127,
+        "y": 581.1547889709473,
+        "wires": []
+    },
+    {
+        "id": "3d0af239.141e2e",
+        "type": "template",
+        "z": "8533b372.8198f",
+        "name": "Current Time Alexa",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "It is {{payload.current.last_updated}}",
+        "x": 658.4999980926514,
+        "y": 582.75,
+        "wires": [
+            [
+                "81e57177.f5a9"
+            ]
+        ]
+    },
+    {
+        "id": "8befba53.5ce5c8",
+        "type": "debug",
+        "z": "8533b372.8198f",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 696.9999980926514,
+        "y": 441,
+        "wires": []
+    },
+    {
+        "id": "c4ab91c3.6b42a",
+        "type": "websocket out",
+        "z": "a2a2101b.a5c09",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 847,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "e0c30a1a.b71718",
+        "type": "websocket out",
+        "z": "8533b372.8198f",
+        "name": "",
+        "server": "e319f0e3.708418",
+        "client": "",
+        "x": 986,
+        "y": 366,
+        "wires": []
+    },
+    {
+        "id": "bac2b46e.fa0e98",
+        "type": "template",
+        "z": "99964d17.db257",
+        "name": "Format Response",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n  \"version\": \"1.0\",\n  \"sessionAttributes\": {\n    \"string\": \"1.0\"\n  },\n  \"response\": {\n    \"outputSpeech\": {\n      \"type\": \"PlainText\",\n      \"text\": \"{{payload}}\"\n    },\n    \"shouldEndSession\":true\n    }\n    }",
+        "x": 624,
+        "y": 261,
+        "wires": [
+            [
+                "41acd932.49d128"
+            ]
+        ]
+    },
+    {
+        "id": "41acd932.49d128",
+        "type": "json",
+        "z": "99964d17.db257",
+        "name": "",
+        "x": 803.4285888671875,
+        "y": 264.2857666015625,
+        "wires": [
+            [
+                "3ece776a.7d8008"
+            ]
+        ]
+    },
+    {
+        "id": "3ece776a.7d8008",
+        "type": "http response",
+        "z": "99964d17.db257",
+        "name": "http",
+        "x": 968.71435546875,
+        "y": 260.857177734375,
+        "wires": []
+    },
+    {
+        "id": "13154ec4.4e19c1",
+        "type": "template",
+        "z": "99964d17.db257",
+        "name": "say Hello",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Hello! this is Jarvis!! Your smart mirror. How can I help!!",
+        "x": 438,
+        "y": 264,
+        "wires": [
+            [
+                "bac2b46e.fa0e98"
+            ]
+        ]
+    },
+    {
+        "id": "ed601e6c.a917d",
+        "type": "link in",
+        "z": "99964d17.db257",
+        "name": "Introduce",
+        "links": [
+            "3adb8fbb.7987c"
+        ],
+        "x": 197,
+        "y": 268,
+        "wires": [
+            [
+                "13154ec4.4e19c1"
+            ]
+        ]
+    }
+]
